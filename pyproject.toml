@@ -1,5 +1,5 @@
 [project]
-name = "news-investigator"
+name = "multi-agent-news-investigator-mongodb"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
