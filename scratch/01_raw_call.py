@@ -1,4 +1,5 @@
 import os
+from urllib import response
 import requests
 from dotenv import load_dotenv
 
@@ -14,4 +15,6 @@ interaction = client.interactions.create(
     model="gemini-3.6-flash",
     input="Explain how AI works in a few words"
 )
+
 print(interaction.output_text)
+
