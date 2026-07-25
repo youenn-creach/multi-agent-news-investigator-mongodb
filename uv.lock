@@ -330,7 +330,7 @@ wheels = [
 [[package]]
 name = "multi-agent-news-investigator-mongodb"
 version = "0.1.0"
-source = { virtual = "." }
+source = { editable = "." }
 dependencies = [
     { name = "google-genai" },
     { name = "python-dotenv" },
