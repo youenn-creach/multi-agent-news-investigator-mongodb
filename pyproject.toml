@@ -13,7 +13,9 @@ dependencies = [
     "langchain-ollama>=1.1.0",
     "pymongo>=4.18.2",
     "python-dotenv>=1.2.2",
+    "pyvis>=0.3.2",
     "requests>=2.34.2",
+    "streamlit>=1.65.0",
     "tavily-python>=0.8.4",
     "trafilatura>=2.3.0",
 ]
