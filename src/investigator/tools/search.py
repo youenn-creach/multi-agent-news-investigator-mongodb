@@ -47,8 +47,8 @@ def search_data(query: str, max_results: int = 5, exclude_domain: str | None = N
         return {"ok": False, "error": "Monthly search budget used up. Work with the sources you already have."}
 
     try:
-        kwargs = {"exclude_domains": [exclude_domain]} if exclude_domain else {}
-        raw = _client().search(query, topic="news", max_results=max_results, **kwargs)
+        # Tavily's own exclude option degraded result quality, so over-fetch and filter locally.
+        raw = _client().search(query, topic="news", max_results=max_results + (3 if exclude_domain else 0))
     except Exception as e:
         return {"ok": False, "error": f"Search failed: {type(e).__name__}"}
     _record_credit()
@@ -62,7 +62,8 @@ def search_data(query: str, max_results: int = 5, exclude_domain: str | None = N
             "published": r.get("published_date"),
         }
         for r in raw.get("results", [])
-    ]
+        if not exclude_domain or exclude_domain not in urlparse(r["url"]).netloc
+    ][:max_results]
     get_db().searches.replace_one(
         {"_id": key}, {"_id": key, "query": query, "results": results, "created_at": now}, upsert=True
     )

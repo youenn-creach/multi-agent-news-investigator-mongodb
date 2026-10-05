@@ -47,14 +47,14 @@ def embed_new_claims() -> int:
     return len(todo)
 
 
-def similar_claims(text: str, k: int = 5, min_score: float = 0.0) -> list[dict]:
+def similar_claims(text: str, k: int = 5, min_score: float = 0.0, vector: list[float] | None = None) -> list[dict]:
     """Past claims closest in meaning to `text`, best first."""
     pipeline = [
         {
             "$vectorSearch": {
                 "index": CLAIMS_INDEX,
                 "path": "embedding",
-                "queryVector": embed_text(text, "query"),
+                "queryVector": vector or embed_text(text, "query"),
                 "numCandidates": 100,
                 "limit": k,
             }

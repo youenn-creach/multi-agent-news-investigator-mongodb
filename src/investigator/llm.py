@@ -20,7 +20,8 @@ load_dotenv()
 
 Tier = Literal["cheap", "smart"]
 
-GEMINI_MODELS = {"cheap": "gemini-3.5-flash-lite", "smart": "gemini-3.8-flash"}
+GEMINI_MODELS = {"cheap": "gemini-3.5-flash-lite", "smart": "gemini-3.5-flash"}
+TIMEOUT = 40  # seconds: fail fast so the next provider in the chain gets a turn
 GROQ_MODELS = {"cheap": "openai/gpt-oss-20b", "smart": "openai/gpt-oss-120b"}
 
 
@@ -29,10 +30,10 @@ def get_llm(tier: Tier = "cheap", temperature: float = 0) -> BaseChatModel:
     ollama_model = os.getenv("OLLAMA_MODEL", "ministral-3:3b")
     chain = [
         ChatGoogleGenerativeAI(
-            model=GEMINI_MODELS[tier], temperature=temperature, max_retries=1
+            model=GEMINI_MODELS[tier], temperature=temperature, max_retries=0, timeout=TIMEOUT
         ),
-        ChatGroq(model=GROQ_MODELS[tier], temperature=temperature, max_retries=1),
-        ChatOllama(model=ollama_model, temperature=temperature),
+        ChatGroq(model=GROQ_MODELS[tier], temperature=temperature, max_retries=0, timeout=TIMEOUT),
+        ChatOllama(model=ollama_model, temperature=temperature, client_kwargs={"timeout": 180}),
     ]
     return chain[0].with_fallbacks(chain[1:])
 
@@ -45,9 +46,9 @@ def get_structured_llm(tier: Tier, schema: type):
     """
     ollama_model = os.getenv("OLLAMA_MODEL", "ministral-3:3b")
     chain = [
-        ChatGoogleGenerativeAI(model=GEMINI_MODELS[tier], max_retries=1).with_structured_output(schema),
-        ChatGroq(model=GROQ_MODELS[tier], max_retries=1).with_structured_output(schema),
-        ChatOllama(model=ollama_model, temperature=0).with_structured_output(schema),
+        ChatGoogleGenerativeAI(model=GEMINI_MODELS[tier], max_retries=0, timeout=TIMEOUT).with_structured_output(schema),
+        ChatGroq(model=GROQ_MODELS[tier], max_retries=0, timeout=TIMEOUT).with_structured_output(schema, method="json_schema"),
+        ChatOllama(model=ollama_model, temperature=0, client_kwargs={"timeout": 180}).with_structured_output(schema),
     ]
     return chain[0].with_fallbacks(chain[1:])
 
