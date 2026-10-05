@@ -37,6 +37,21 @@ def get_llm(tier: Tier = "cheap", temperature: float = 0) -> BaseChatModel:
     return chain[0].with_fallbacks(chain[1:])
 
 
+def get_structured_llm(tier: Tier, schema: type):
+    """Like get_llm, but every provider is forced to answer in the Pydantic `schema`.
+
+    Structured output must be applied per provider *before* chaining fallbacks,
+    because a fallback chain itself has no `with_structured_output`.
+    """
+    ollama_model = os.getenv("OLLAMA_MODEL", "ministral-3:3b")
+    chain = [
+        ChatGoogleGenerativeAI(model=GEMINI_MODELS[tier], max_retries=1).with_structured_output(schema),
+        ChatGroq(model=GROQ_MODELS[tier], max_retries=1).with_structured_output(schema),
+        ChatOllama(model=ollama_model, temperature=0).with_structured_output(schema),
+    ]
+    return chain[0].with_fallbacks(chain[1:])
+
+
 def get_provider(tier: Tier, provider: Literal["gemini", "groq", "ollama"]) -> BaseChatModel:
     """One specific provider, no fallback (used to test each link of the chain)."""
     if provider == "gemini":
