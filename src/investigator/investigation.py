@@ -33,7 +33,7 @@ def run_investigation(url: str, on_step: Callable[[str, dict], None] | None = No
         {"_id": doc_id},
         {"$set": {
             "status": "done", "report": state.get("report"), "claims": state.get("claims", []),
-            "verdicts": state.get("verdicts", []), "sources": state.get("sources", []),
+            "verdicts": state.get("verdicts", []), "memory": state.get("memory", []), "sources": state.get("sources", []),
             "errors": state["errors"], "finished_at": datetime.now(timezone.utc),
         }},
     )

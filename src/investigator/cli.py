@@ -16,6 +16,10 @@ def main() -> None:
         print(f"  ⚑ {flag}")
     for s in r["sources"]:
         print(f"  ✓ {s['source']}: {s['url']}")
+    if r.get("previously_seen"):
+        print("\n📚 Memory: similar claims from earlier investigations")
+        for m in r["previously_seen"]:
+            print(f"  [{m['status']}, similarity {m['similarity']}] {m['claim'][:100]}")
     if result["errors"]:
         print("\nProblems along the way:", *result["errors"], sep="\n  - ")
 

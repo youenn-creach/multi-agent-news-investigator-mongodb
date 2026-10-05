@@ -194,7 +194,8 @@ ARTICLE: {title} ({source})
 CLAIMS AND VERDICTS:
 {verdicts}
 INDEPENDENT SOURCES FOUND: {n_sources}
-PAST INVESTIGATIONS RELATED: {n_memory}
+PAST INVESTIGATIONS OF SIMILAR CLAIMS (mention them in the summary if relevant, e.g. that this story was already investigated):
+{memory}
 PROBLEMS ENCOUNTERED: {errors}"""
 
 
@@ -209,7 +210,7 @@ def writer(state: InvestigationState) -> dict:
     prompt = WRITER_PROMPT.format(
         title=article["title"], source=article.get("source"),
         verdicts="\n".join(lines) or "(no claims extracted)",
-        n_sources=len(state.get("sources", [])), n_memory=len(state.get("memory", [])),
+        n_sources=len(state.get("sources", [])), memory="\n".join(f"- ({m['status']}) {m['text']}" for m in state.get("memory", [])[:6]) or "(none)",
         errors="; ".join(state.get("errors", [])) or "none",
     )
     try:
@@ -219,6 +220,12 @@ def writer(state: InvestigationState) -> dict:
     cited = sorted({i for v in verdicts.values() for i in v["source_indexes"] if v["verdict"] == "supports"})
     sources = state.get("sources", [])
     report["sources"] = [sources[i] for i in cited if 0 <= i < len(sources)]
+    if state.get("memory"):
+        report["flags"].append(f"{len(state['memory'])} similar claim(s) were already seen in earlier investigations")
+    report["previously_seen"] = [
+        {"claim": m["text"], "status": m["status"], "earlier_articles": m["article_urls"], "similarity": round(m["score"], 2)}
+        for m in state.get("memory", [])
+    ]
     return {"report": report}
 
 
