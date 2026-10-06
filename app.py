@@ -148,7 +148,9 @@ def page_graph() -> None:
 
 # ---------- navigation ----------
 PAGES = {"🕵️ Investigate": page_investigate, "📜 History": page_history, "🧩 Claims": page_claims, "🕸️ Graph": page_graph}
-choice = st.sidebar.radio("Navigate", list(PAGES), label_visibility="collapsed")
+# ?page=history (or investigate / claims / graph) opens a page directly, so pages can be linked
+_wanted = next((i for i, name in enumerate(PAGES) if st.query_params.get("page", "") in name.lower()), 0) if st.query_params.get("page") else 0
+choice = st.sidebar.radio("Navigate", list(PAGES), index=_wanted, label_visibility="collapsed")
 st.sidebar.divider()
 st.sidebar.caption("Multi-agent news investigator · LangGraph + MongoDB Atlas + Voyage AI")
 PAGES[choice]()
