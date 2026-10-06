@@ -4,6 +4,8 @@
 
 Built with **LangGraph**, **MongoDB Atlas** (including **Vector Search**), **Voyage AI** embeddings and a **free-tier-only** mix of cloud and local LLMs.
 
+![A finished investigation report](docs/img/report.png)
+
 ## Why this isn't "just ChatGPT"
 
 - **It is grounded in evidence, not in the model's memory.** Each claim is judged only against sources retrieved for that investigation. If the sources don't address a claim, the verdict is *unclear*, not a guess. ([`graph.py`](src/investigator/graph.py), `skeptic`)
@@ -38,6 +40,14 @@ The agents share one state object. Each node reads it and returns only what it c
 
 **Searching with claims, not titles.** An early version searched with the article title and found irrelevant pages. Extracting claims *first* and searching with those gave real corroborating coverage, so the graph is ordered that way.
 
+### In the app
+
+| Claims and their evidence trail | Knowledge graph |
+|---|---|
+| ![Claims page](docs/img/claims.png) | ![Knowledge graph](docs/img/graph.png) |
+
+Blue = entities, green = corroborated claims, grey = unverified claims, purple squares = articles.
+
 ### What is stored in MongoDB
 
 | Collection | Holds | Notes |
@@ -55,8 +65,10 @@ Two tiers, each with a fallback chain, so a rate limit (HTTP 429) or outage neve
 
 | Tier | 1st | 2nd | 3rd (local) |
 |---|---|---|---|
-| cheap | Gemini 3.5 Flash-Lite | Groq `gpt-oss-20b` | Ollama `ministral-3:3b` |
-| smart (extraction, verification, report) | Gemini 3.5 Flash | Groq `gpt-oss-120b` | Ollama `ministral-3:3b` |
+| cheap | Gemini 3.5 Flash-Lite | Groq `gpt-oss-20b` | Mistral `ministral-3:3b` (local, via Ollama) |
+| smart (extraction, verification, report) | Gemini 3.5 Flash | Groq `gpt-oss-120b` | Mistral `ministral-3:3b` (local, via Ollama) |
+
+**Local model:** the last link of the chain is a [Mistral](https://mistral.ai) model running on your own machine through Ollama, so the project keeps working offline or when every cloud quota is used up. The default is `ministral-3:3b`, Mistral's small model, which is light enough for a laptop. Any other Ollama model, such as the larger `mistral` (7B), can be used by changing `OLLAMA_MODEL` in `.env`. It is slow on a CPU, so it is a safety net, not the main path.
 
 Every provider has a timeout, and the structured output (Pydantic schemas) is applied per provider before the fallbacks are chained.
 
@@ -68,7 +80,7 @@ Every provider has a timeout, and the structured output (Pydantic schemas) is ap
 | Database and memory | MongoDB Atlas free tier (M0) + Atlas Vector Search |
 | Embeddings | Voyage AI `voyage-4-lite` (1024 dims) |
 | Cloud LLMs | Gemini (primary), Groq (fallback) |
-| Local LLM | Ollama (last-resort fallback) |
+| Local LLM | Mistral, run locally with Ollama (last-resort fallback, no quota) |
 | Web search | Tavily (free tier) |
 | Article extraction | trafilatura |
 | UI | Streamlit, pyvis (knowledge graph) |
@@ -76,7 +88,7 @@ Every provider has a timeout, and the structured output (Pydantic schemas) is ap
 
 ## Quickstart
 
-You need Python 3.12+, [uv](https://docs.astral.sh/uv/) and free accounts for: MongoDB Atlas (M0 cluster), Google AI Studio (Gemini), Groq, Tavily and Voyage AI (a model API key from Atlas works). [Ollama](https://ollama.com) with a small model is optional but recommended as a fallback.
+You need Python 3.12+, [uv](https://docs.astral.sh/uv/) and free accounts for: MongoDB Atlas (M0 cluster), Google AI Studio (Gemini), Groq, Tavily and Voyage AI (a model API key from Atlas works). [Ollama](https://ollama.com) with a Mistral model (`ollama pull ministral-3:3b`) is optional but recommended as the local fallback.
 
 ```bash
 git clone https://github.com/youenn-creach/multi-agent-news-investigator-mongodb.git
