@@ -59,6 +59,18 @@ Blue = entities, green = corroborated claims, grey = unverified claims, purple s
 | `usage` | monthly search-credit counter | the tool refuses to search past the budget |
 | `investigations` | one document per run: steps, report, sources, memory | steps are saved as they happen, so a crash leaves a partial record |
 
+### Semantic claim deduplication
+
+The same fact is often worded differently by different articles. New claims are compared with stored ones by embedding similarity, with three bands chosen from real data ([`dedup.py`](src/investigator/dedup.py)):
+
+| Similarity (cosine) | Decision |
+|---|---|
+| ≥ 0.985 and identical numbers | merged automatically |
+| 0.93 – 0.985 | a strict LLM judge decides: *exactly* the same facts, or not |
+| < 0.93 | kept separate |
+
+The number check exists because embeddings are weak on figures: "2.5%" and "2.75%" must never be merged. A merged claim keeps the other wording as a variant and lists every article that made it. `uv run python -m investigator.dedup` shows (and with `--apply` performs) a clean-up of older duplicates.
+
 ### LLM routing
 
 Two tiers, each with a fallback chain, so a rate limit (HTTP 429) or outage never stops a run:
@@ -70,7 +82,7 @@ Two tiers, each with a fallback chain, so a rate limit (HTTP 429) or outage neve
 
 **Local model:** the last link of the chain is a [Mistral](https://mistral.ai) model running on your own machine through Ollama, so the project keeps working offline or when every cloud quota is used up. The default is `ministral-3:3b`, Mistral's small model, which is light enough for a laptop. Any other Ollama model, such as the larger `mistral` (7B), can be used by changing `OLLAMA_MODEL` in `.env`. It is slow on a CPU, so it is a safety net, not the main path.
 
-Every provider has a timeout, and the structured output (Pydantic schemas) is applied per provider before the fallbacks are chained.
+Every provider call has a hard deadline, because client-library timeouts are not always enforced: a stuck call is abandoned and the next provider takes over. Structured output (Pydantic schemas) is applied per provider before the fallbacks are chained.
 
 ## Stack
 
@@ -134,7 +146,7 @@ docs/PLAN.md                the original learning plan
 ## Limitations (honest ones)
 
 - **Verification uses search snippets, not full source articles.** Good enough to confirm headline facts, weak for detailed numbers. Many claims end up *unclear*, which is the intended behaviour but means reports are often *mixed*.
-- **Near-duplicate claims** worded differently are stored as separate entries (no semantic deduplication yet).
+- **Claim deduplication is deliberately conservative.** Claims are merged only when they are near-identical in meaning and numbers, so some real duplicates stay separate rather than risk merging two different claims.
 - **Source quality is not scored.** A snippet from a blog and one from a central bank count the same.
 - **Paywalled or JavaScript-only pages** can't be read; the report then says so.
 - **No authentication.** It is meant to run locally; exposing it publicly would let anyone spend the free-tier quotas.
@@ -142,7 +154,6 @@ docs/PLAN.md                the original learning plan
 
 ## Roadmap
 
-- Semantic claim deduplication with embeddings
 - Source-reliability scoring learned from past evidence
 - Timeline view per entity
 - Scheduled re-checking of unverified claims

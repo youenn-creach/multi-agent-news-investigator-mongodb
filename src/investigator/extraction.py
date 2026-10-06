@@ -10,6 +10,8 @@ from typing import Literal
 from pydantic import BaseModel, Field
 
 from investigator.db import get_db
+from investigator.dedup import cosine, find_duplicate, is_duplicate
+from investigator.embeddings import embed_texts
 from investigator.llm import get_structured_llm
 
 ARTICLE_CHARS = 8_000
@@ -53,8 +55,24 @@ def extract(title: str, text: str) -> Extraction:
     return llm.invoke(PROMPT.format(title=title, text=text[:ARTICLE_CHARS]))
 
 
+def status_from_evidence(evidence: list[dict]) -> str:
+    """unverified -> corroborated | disputed | contradicted, from the verdicts collected so far."""
+    kinds = {e["verdict"] for e in evidence}
+    if {"supports", "contradicts"} <= kinds:
+        return "disputed"
+    if "contradicts" in kinds:
+        return "contradicted"
+    if "supports" in kinds:
+        return "corroborated"
+    return "unverified"
+
+
 def save_extraction(article_url: str, extraction: Extraction) -> dict:
-    """Upsert entities by normalized name; claims by normalized text. Returns counts."""
+    """Upsert entities by name; claims by exact text, then by meaning (semantic dedup).
+
+    A claim that restates an existing one is merged into it: the article is added to
+    the existing claim and the new wording is kept as a variant. Returns counts.
+    """
     db = get_db()
     now = datetime.now(timezone.utc)
 
@@ -68,14 +86,47 @@ def save_extraction(article_url: str, extraction: Extraction) -> dict:
             },
             upsert=True,
         )
+
+    # 1. exact matches are cheap: no embedding needed
+    new_claims = []
     for c in extraction.claims:
-        db.claims.update_one(
+        found = db.claims.update_one({"key": normalize(c.text)}, {"$addToSet": {"article_urls": article_url}})
+        if not found.matched_count:
+            new_claims.append(c)
+
+    # 2. the rest: embed them (one request), then look for same-meaning claims
+    try:
+        vectors = embed_texts([c.text for c in new_claims], "document") if new_claims else []
+    except Exception:
+        vectors = [None] * len(new_claims)  # embedding down: store without vectors, embed later
+
+    merged, batch = 0, []  # batch: claims already handled in this article (the index may lag behind)
+    for c, vec in zip(new_claims, vectors):
+        dup_id = None
+        if vec is not None:
+            for other_vec, other_id, other_text in batch:
+                if is_duplicate(c.text, other_text, cosine(vec, other_vec)):
+                    dup_id = other_id
+                    break
+            if dup_id is None:
+                try:
+                    hit = find_duplicate(c.text, vec)
+                    dup_id = hit["_id"] if hit else None
+                except Exception:
+                    dup_id = None  # index not ready: treat as new
+        if dup_id is not None:
+            db.claims.update_one({"_id": dup_id}, {"$addToSet": {"article_urls": article_url, "variants": c.text}})
+            merged += 1
+            continue
+        doc = {"text": c.text, "subject": c.subject, "type": c.type}
+        if vec is not None:
+            doc["embedding"] = vec
+        res = db.claims.update_one(
             {"key": normalize(c.text)},
-            {
-                "$set": {"text": c.text, "subject": c.subject, "type": c.type},
-                "$addToSet": {"article_urls": article_url},
-                "$setOnInsert": {"status": "unverified", "evidence": [], "created_at": now},
-            },
+            {"$set": doc, "$addToSet": {"article_urls": article_url},
+             "$setOnInsert": {"status": "unverified", "evidence": [], "created_at": now}},
             upsert=True,
         )
-    return {"claims": len(extraction.claims), "entities": len(extraction.entities)}
+        if vec is not None:
+            batch.append((vec, res.upserted_id or db.claims.find_one({"key": normalize(c.text)}, {"_id": 1})["_id"], c.text))
+    return {"claims": len(extraction.claims), "entities": len(extraction.entities), "merged": merged}

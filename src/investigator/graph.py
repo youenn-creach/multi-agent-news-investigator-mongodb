@@ -14,7 +14,7 @@ from pydantic import BaseModel, Field
 
 from investigator.db import get_db
 from investigator.embeddings import embed_texts
-from investigator.extraction import extract, save_extraction
+from investigator.extraction import extract, save_extraction, status_from_evidence
 from investigator.llm import get_structured_llm
 from investigator.memory import embed_new_claims, similar_claims
 from investigator.tools.articles import fetch_article_data
@@ -176,15 +176,14 @@ def _update_claim_status(state, claims, sources, verdicts) -> None:
         if not evidence:
             continue
         coll = get_db().claims
-        coll.update_one({"key": normalize(claims[v["claim_index"]]["text"])}, {"$push": {"evidence": {"$each": evidence}}})
-        doc = coll.find_one({"key": normalize(claims[v["claim_index"]]["text"])}, {"evidence": 1})
-        kinds = {e["verdict"] for e in doc["evidence"]}
-        status = (
-            "disputed" if {"supports", "contradicts"} <= kinds
-            else "contradicted" if "contradicts" in kinds
-            else "corroborated" if "supports" in kinds
-            else "unverified"
-        )
+        text = claims[v["claim_index"]]["text"]
+        # the claim may have been merged into an older one: match its own wording or a stored variant
+        doc = coll.find_one({"$or": [{"key": normalize(text)}, {"variants": text}]}, {"evidence": 1})
+        if not doc:
+            continue
+        coll.update_one({"_id": doc["_id"]}, {"$push": {"evidence": {"$each": evidence}}})
+        doc = coll.find_one({"_id": doc["_id"]}, {"evidence": 1})
+        status = status_from_evidence(doc["evidence"])
         coll.update_one({"_id": doc["_id"]}, {"$set": {"status": status}})
 
 
