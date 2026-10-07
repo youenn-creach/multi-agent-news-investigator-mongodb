@@ -1,4 +1,6 @@
 """Tool: fetch a news article by URL, extract clean text, cache it in MongoDB."""
+import ipaddress
+import socket
 from urllib.parse import urlparse
 
 import trafilatura
@@ -10,11 +12,31 @@ MAX_CHARS = 12_000  # keep prompts small: free-tier token limits are tight
 MIN_CHARS = 200  # below this the page is almost certainly a paywall/cookie wall
 
 
+def is_public_url(url: str) -> bool:
+    """False for addresses that resolve to private, loopback or link-local ranges.
+
+    Without this, anyone who can submit a URL could make the app read internal services
+    (localhost, a router admin page, a cloud metadata endpoint). Best-effort: it does not
+    defend against DNS rebinding, so the app is still meant to run locally.
+    """
+    host = urlparse(url).hostname
+    if not host:
+        return False
+    try:
+        addresses = {info[4][0] for info in socket.getaddrinfo(host, None)}
+    except OSError:
+        return True  # cannot resolve: the download step will report it
+    return all(ipaddress.ip_address(a.split("%")[0]).is_global for a in addresses)
+
+
 def fetch_article_data(url: str) -> dict:
     """Plain-Python version. Never raises: returns {"ok": False, "error": ...} on failure."""
     parsed = urlparse(url)
     if parsed.scheme not in ("http", "https") or not parsed.netloc:
         return {"ok": False, "url": url, "error": "Not a valid http(s) URL."}
+
+    if not is_public_url(url):
+        return {"ok": False, "url": url, "error": "Refusing to fetch a private or local network address."}
 
     cached = get_article(url)
     if cached:

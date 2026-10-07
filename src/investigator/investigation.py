@@ -1,6 +1,7 @@
 """Run the graph for one URL and persist the investigation (live progress included)."""
 from datetime import datetime, timezone
 from typing import Callable
+from urllib.parse import urldefrag
 
 from investigator.db import get_db
 from investigator.graph import build_graph
@@ -8,6 +9,7 @@ from investigator.graph import build_graph
 
 def run_investigation(url: str, on_step: Callable[[str, dict], None] | None = None) -> dict:
     """Stream the graph node by node, saving each step so a crash still leaves a partial record."""
+    url = urldefrag(url.strip()).url  # pasted URLs often carry spaces or a #fragment: one article, one key
     coll = get_db().investigations
     doc_id = coll.insert_one(
         {"url": url, "status": "running", "steps": [], "created_at": datetime.now(timezone.utc)}

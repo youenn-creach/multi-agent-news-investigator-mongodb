@@ -1,17 +1,14 @@
 """Tools: web search via Tavily. Every search is cached in MongoDB (credits are scarce)."""
 import hashlib
-import os
 from datetime import datetime, timedelta, timezone
 from functools import lru_cache
 from urllib.parse import urlparse
 
-from dotenv import load_dotenv
 from langchain_core.tools import tool
 from tavily import TavilyClient
 
 from investigator.db import get_db
-
-load_dotenv()
+from investigator.settings import require_env
 
 CACHE_TTL = timedelta(days=7)
 SNIPPET_CHARS = 500
@@ -20,7 +17,7 @@ MONTHLY_BUDGET = 1000  # free tier; we refuse to search past this
 
 @lru_cache(maxsize=1)
 def _client() -> TavilyClient:
-    return TavilyClient(api_key=os.environ["TAVILY_API_KEY"])
+    return TavilyClient(api_key=require_env("TAVILY_API_KEY"))
 
 
 def _credits_used_this_month() -> int:
@@ -32,6 +29,15 @@ def _credits_used_this_month() -> int:
 def _record_credit() -> None:
     month = datetime.now(timezone.utc).strftime("%Y-%m")
     get_db().usage.update_one({"_id": f"tavily-{month}"}, {"$inc": {"credits": 1}}, upsert=True)
+
+
+def _is_domain(netloc: str, domain: str | None) -> bool:
+    """True if netloc is `domain` or one of its subdomains (not merely a longer name containing it)."""
+    if not domain:
+        return False
+    netloc = netloc.lower().split(":")[0]
+    domain = domain.lower().removeprefix("www.")
+    return netloc == domain or netloc.endswith("." + domain)
 
 
 def search_data(query: str, max_results: int = 5, exclude_domain: str | None = None) -> dict:
@@ -62,7 +68,7 @@ def search_data(query: str, max_results: int = 5, exclude_domain: str | None = N
             "published": r.get("published_date"),
         }
         for r in raw.get("results", [])
-        if not exclude_domain or exclude_domain not in urlparse(r["url"]).netloc
+        if r.get("url") and not _is_domain(urlparse(r["url"]).netloc, exclude_domain)
     ][:max_results]
     get_db().searches.replace_one(
         {"_id": key}, {"_id": key, "query": query, "results": results, "created_at": now}, upsert=True

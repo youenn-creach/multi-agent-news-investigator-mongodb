@@ -1,16 +1,20 @@
 [project]
 name = "multi-agent-news-investigator-mongodb"
 version = "0.1.0"
-description = "Add your description here"
+description = "Multi-agent news fact-checker: LangGraph agents, MongoDB Atlas Vector Search and Voyage AI embeddings, on free tiers."
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "certifi>=2026.6.17",
     "google-genai>=2.13.0",
     "langchain>=1.4.3",
+    "langchain-core>=1.6.6",
     "langchain-google-genai>=4.3.7",
     "langchain-groq>=1.1.3",
     "langchain-ollama>=1.1.0",
+    "langgraph>=1.2.13",
+    "numpy>=2.5.3",
+    "pydantic>=2.13.4",
     "pymongo>=4.18.2",
     "python-dotenv>=1.2.2",
     "pyvis>=0.3.2",
@@ -29,3 +33,11 @@ build-backend = "hatchling.build"
 [tool.hatch.build.targets.wheel]
 
 packages = ["src/investigator"]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

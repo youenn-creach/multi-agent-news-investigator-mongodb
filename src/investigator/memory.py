@@ -1,6 +1,7 @@
 """Memory: embed claims and find similar past claims with Atlas Vector Search."""
 import time
 
+from pymongo import UpdateOne
 from pymongo.operations import SearchIndexModel
 
 from investigator.db import get_db
@@ -35,16 +36,15 @@ def ensure_vector_index(timeout_s: int = 120) -> None:
     raise TimeoutError("Vector index not ready yet; try again in a minute.")
 
 
-def embed_new_claims() -> int:
-    """Embed every claim that has no vector yet. Returns how many were embedded."""
+def embed_new_claims() -> list:
+    """Embed every claim that has no vector yet. Returns the ids of the claims that were embedded."""
     claims = get_db().claims
     todo = list(claims.find({"embedding": {"$exists": False}}, {"text": 1}))
     if not todo:
-        return 0
+        return []
     vectors = embed_texts([c["text"] for c in todo], "document")
-    for c, v in zip(todo, vectors):
-        claims.update_one({"_id": c["_id"]}, {"$set": {"embedding": v}})
-    return len(todo)
+    claims.bulk_write([UpdateOne({"_id": c["_id"]}, {"$set": {"embedding": v}}) for c, v in zip(todo, vectors, strict=True)])
+    return [c["_id"] for c in todo]
 
 
 def similar_claims(text: str, k: int = 5, min_score: float = 0.0, vector: list[float] | None = None) -> list[dict]:
