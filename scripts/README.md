@@ -7,7 +7,7 @@ and may use a little free-tier quota. Run them from the project root.
 | Folder | What | Example |
 |---|---|---|
 | `checks/` | Live checks of each piece against real services, written while building the project | `uv run python scripts/checks/llm_cascade.py` |
-| `assets/` | Regenerate the README screenshots, demo GIF and social preview (need the app running and `playwright`) | `uv run --with playwright python scripts/assets/screenshots.py` |
+| `assets/` | Regenerate the README architecture diagram, screenshots, demo GIF and social preview (screenshots and GIF need the app running; all need `playwright`) | `uv run --with playwright python scripts/assets/screenshots.py` |
 | `calibration/` | The analysis behind the claim-deduplication thresholds | `uv run python scripts/calibration/dedup_thresholds.py` |
 | `experiments/` | The very first Gemini API calls, kept as a record of where the project started | |
 

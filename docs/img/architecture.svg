@@ -1,0 +1,212 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 930" width="1400" height="930">
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0d1a2c"/><stop offset="1" stop-color="#08101c"/></linearGradient>
+<radialGradient id="glow" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#13aa52" stop-opacity="0.32"/><stop offset="1" stop-color="#13aa52" stop-opacity="0"/></radialGradient>
+<marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#9fb0c6"/></marker>
+<marker id="arrG" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#13aa52"/></marker>
+<marker id="arrA" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#f2b84b"/></marker>
+</defs>
+<rect x="0" y="0" width="1400" height="930" rx="0" fill="url(#bg)" stroke="none" stroke-width="0" />
+<circle cx="1180" cy="560" r="330" fill="url(#glow)"/>
+<text x="30" y="40" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13" font-weight="700" fill="#13aa52" text-anchor="start" letter-spacing="3" opacity="1">ONE INVESTIGATION, END TO END</text>
+<text x="30" y="66" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="15" font-weight="400" fill="#9fb0c6" text-anchor="start" letter-spacing="0" opacity="1">A LangGraph state graph: every step reads the shared state and returns only what it changes.</text>
+<rect x="20" y="168" width="112" height="62" rx="14" fill="#10304a" stroke="#2f6a9a" stroke-width="1.2" />
+<text x="76" y="195" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#e8eef7" text-anchor="middle" letter-spacing="0" opacity="1">Article URL</text>
+<text x="76" y="214" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#9fb0c6" text-anchor="middle" letter-spacing="0" opacity="1">app or CLI</text>
+<line x1="134" y1="199" x2="166" y2="199" stroke="#9fb0c6" stroke-width="1.8" marker-end="url(#arr)"/>
+<rect x="1290" y="168" width="96" height="62" rx="14" fill="#10304a" stroke="#2f6a9a" stroke-width="1.2" />
+<text x="1338" y="195" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#e8eef7" text-anchor="middle" letter-spacing="0" opacity="1">Report</text>
+<text x="1338" y="214" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#9fb0c6" text-anchor="middle" letter-spacing="0" opacity="1">verdict · sources</text>
+<line x1="1272" y1="199" x2="1286" y2="199" stroke="#9fb0c6" stroke-width="1.8" marker-end="url(#arr)"/>
+<rect x="170" y="128" width="160" height="142" rx="14" fill="#14233a" stroke="#2c4768" stroke-width="1.2" />
+<path d="M170,142 a14,14 0 0 1 14,-14 h132 a14,14 0 0 1 14,14 v22 h-160 z" fill="#1c3556"/>
+<circle cx="192" cy="149" r="11" fill="#3b6aa0"/>
+<text x="192" y="154" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13" font-weight="800" fill="#fff" text-anchor="middle" letter-spacing="0" opacity="1">1</text>
+<text x="211" y="155" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="16.5" font-weight="700" fill="#e8eef7" text-anchor="start" letter-spacing="0" opacity="1">hunter</text>
+<text x="184" y="190" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13" font-weight="500" fill="#e8eef7" text-anchor="start" letter-spacing="0" opacity="1">Fetch the article</text>
+<rect x="182" y="220" width="136" height="22" rx="11.0" fill="#0f1b2d" stroke="#35557c" stroke-width="1" />
+<text x="250.0" y="234.85" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="600" fill="#9fb0c6" text-anchor="middle" letter-spacing="0" opacity="1">trafilatura</text>
+<text x="184" y="260" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="600" fill="#6fdc9a" text-anchor="start" letter-spacing="0" opacity="1">→ articles</text>
+<line x1="332" y1="199" x2="354" y2="199" stroke="#9fb0c6" stroke-width="1.8" marker-end="url(#arr)"/>
+<line x1="250.0" y1="270" x2="250.0" y2="292" stroke="#6f8199" stroke-width="1.5" stroke-dasharray="2 4"/>
+<rect x="358" y="128" width="160" height="142" rx="14" fill="#14233a" stroke="#2c4768" stroke-width="1.2" />
+<path d="M358,142 a14,14 0 0 1 14,-14 h132 a14,14 0 0 1 14,14 v22 h-160 z" fill="#1c3556"/>
+<circle cx="380" cy="149" r="11" fill="#3b6aa0"/>
+<text x="380" y="154" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13" font-weight="800" fill="#fff" text-anchor="middle" letter-spacing="0" opacity="1">2</text>
+<text x="399" y="155" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="16.5" font-weight="700" fill="#e8eef7" text-anchor="start" letter-spacing="0" opacity="1">analyst</text>
+<text x="372" y="190" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13" font-weight="500" fill="#e8eef7" text-anchor="start" letter-spacing="0" opacity="1">Extract claims</text>
+<text x="372" y="207" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13" font-weight="500" fill="#e8eef7" text-anchor="start" letter-spacing="0" opacity="1">and entities</text>
+<rect x="370" y="220" width="136" height="22" rx="11.0" fill="#0f1b2d" stroke="#35557c" stroke-width="1" />
+<text x="438.0" y="234.85" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="600" fill="#9fb0c6" text-anchor="middle" letter-spacing="0" opacity="1">Pydantic schema</text>
+<text x="372" y="260" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="600" fill="#6fdc9a" text-anchor="start" letter-spacing="0" opacity="1">→ claims · entities</text>
+<rect x="472" y="136" width="38" height="18" rx="9.0" fill="#3a2c0c" stroke="#f2b84b" stroke-width="1" />
+<text x="491.0" y="148.5" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10" font-weight="800" fill="#f2b84b" text-anchor="middle" letter-spacing="0" opacity="1">LLM</text>
+<line x1="520" y1="199" x2="542" y2="199" stroke="#9fb0c6" stroke-width="1.8" marker-end="url(#arr)"/>
+<line x1="438.0" y1="270" x2="438.0" y2="292" stroke="#6f8199" stroke-width="1.5" stroke-dasharray="2 4"/>
+<rect x="546" y="128" width="160" height="142" rx="14" fill="#14233a" stroke="#2c4768" stroke-width="1.2" />
+<path d="M546,142 a14,14 0 0 1 14,-14 h132 a14,14 0 0 1 14,14 v22 h-160 z" fill="#1c3556"/>
+<circle cx="568" cy="149" r="11" fill="#3b6aa0"/>
+<text x="568" y="154" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13" font-weight="800" fill="#fff" text-anchor="middle" letter-spacing="0" opacity="1">3</text>
+<text x="587" y="155" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="16.5" font-weight="700" fill="#e8eef7" text-anchor="start" letter-spacing="0" opacity="1">searcher</text>
+<text x="560" y="190" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13" font-weight="500" fill="#e8eef7" text-anchor="start" letter-spacing="0" opacity="1">Find independent</text>
+<text x="560" y="207" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13" font-weight="500" fill="#e8eef7" text-anchor="start" letter-spacing="0" opacity="1">coverage</text>
+<rect x="558" y="220" width="136" height="22" rx="11.0" fill="#0f1b2d" stroke="#35557c" stroke-width="1" />
+<text x="626.0" y="234.85" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="600" fill="#9fb0c6" text-anchor="middle" letter-spacing="0" opacity="1">Tavily news search</text>
+<text x="560" y="260" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="600" fill="#6fdc9a" text-anchor="start" letter-spacing="0" opacity="1">→ searches · usage</text>
+<line x1="708" y1="199" x2="730" y2="199" stroke="#9fb0c6" stroke-width="1.8" marker-end="url(#arr)"/>
+<line x1="626.0" y1="270" x2="626.0" y2="292" stroke="#6f8199" stroke-width="1.5" stroke-dasharray="2 4"/>
+<rect x="734" y="128" width="160" height="142" rx="14" fill="#14233a" stroke="#13aa52" stroke-width="2" />
+<path d="M734,142 a14,14 0 0 1 14,-14 h132 a14,14 0 0 1 14,14 v22 h-160 z" fill="#0b5d2e"/>
+<circle cx="756" cy="149" r="11" fill="#13aa52"/>
+<text x="756" y="154" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13" font-weight="800" fill="#04210f" text-anchor="middle" letter-spacing="0" opacity="1">4</text>
+<text x="775" y="155" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="16.5" font-weight="700" fill="#e8eef7" text-anchor="start" letter-spacing="0" opacity="1">historian</text>
+<text x="748" y="190" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13" font-weight="500" fill="#e8eef7" text-anchor="start" letter-spacing="0" opacity="1">Recall similar</text>
+<text x="748" y="207" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13" font-weight="500" fill="#e8eef7" text-anchor="start" letter-spacing="0" opacity="1">past claims</text>
+<rect x="746" y="220" width="136" height="22" rx="11.0" fill="#0f1b2d" stroke="#13aa52" stroke-width="1" />
+<text x="814.0" y="234.85" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="600" fill="#9ae6b4" text-anchor="middle" letter-spacing="0" opacity="1">Voyage AI embeddings</text>
+<text x="748" y="260" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="600" fill="#6fdc9a" text-anchor="start" letter-spacing="0" opacity="1">→ claims (vector search)</text>
+<line x1="896" y1="199" x2="918" y2="199" stroke="#9fb0c6" stroke-width="1.8" marker-end="url(#arr)"/>
+<line x1="814.0" y1="270" x2="814.0" y2="292" stroke="#6f8199" stroke-width="1.5" stroke-dasharray="2 4"/>
+<rect x="922" y="128" width="160" height="142" rx="14" fill="#14233a" stroke="#2c4768" stroke-width="1.2" />
+<path d="M922,142 a14,14 0 0 1 14,-14 h132 a14,14 0 0 1 14,14 v22 h-160 z" fill="#1c3556"/>
+<circle cx="944" cy="149" r="11" fill="#3b6aa0"/>
+<text x="944" y="154" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13" font-weight="800" fill="#fff" text-anchor="middle" letter-spacing="0" opacity="1">5</text>
+<text x="963" y="155" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="16.5" font-weight="700" fill="#e8eef7" text-anchor="start" letter-spacing="0" opacity="1">skeptic</text>
+<text x="936" y="190" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13" font-weight="500" fill="#e8eef7" text-anchor="start" letter-spacing="0" opacity="1">Judge each claim</text>
+<text x="936" y="207" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13" font-weight="500" fill="#e8eef7" text-anchor="start" letter-spacing="0" opacity="1">against the evidence</text>
+<rect x="934" y="220" width="136" height="22" rx="11.0" fill="#0f1b2d" stroke="#35557c" stroke-width="1" />
+<text x="1002.0" y="234.85" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="600" fill="#9fb0c6" text-anchor="middle" letter-spacing="0" opacity="1">strict verdicts</text>
+<text x="936" y="260" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="600" fill="#6fdc9a" text-anchor="start" letter-spacing="0" opacity="1">→ claims.evidence</text>
+<rect x="1036" y="136" width="38" height="18" rx="9.0" fill="#3a2c0c" stroke="#f2b84b" stroke-width="1" />
+<text x="1055.0" y="148.5" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10" font-weight="800" fill="#f2b84b" text-anchor="middle" letter-spacing="0" opacity="1">LLM</text>
+<line x1="1084" y1="199" x2="1106" y2="199" stroke="#9fb0c6" stroke-width="1.8" marker-end="url(#arr)"/>
+<line x1="1002.0" y1="270" x2="1002.0" y2="292" stroke="#6f8199" stroke-width="1.5" stroke-dasharray="2 4"/>
+<rect x="1110" y="128" width="160" height="142" rx="14" fill="#14233a" stroke="#2c4768" stroke-width="1.2" />
+<path d="M1110,142 a14,14 0 0 1 14,-14 h132 a14,14 0 0 1 14,14 v22 h-160 z" fill="#1c3556"/>
+<circle cx="1132" cy="149" r="11" fill="#3b6aa0"/>
+<text x="1132" y="154" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13" font-weight="800" fill="#fff" text-anchor="middle" letter-spacing="0" opacity="1">6</text>
+<text x="1151" y="155" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="16.5" font-weight="700" fill="#e8eef7" text-anchor="start" letter-spacing="0" opacity="1">writer</text>
+<text x="1124" y="190" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13" font-weight="500" fill="#e8eef7" text-anchor="start" letter-spacing="0" opacity="1">Write the sourced</text>
+<text x="1124" y="207" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13" font-weight="500" fill="#e8eef7" text-anchor="start" letter-spacing="0" opacity="1">report</text>
+<rect x="1122" y="220" width="136" height="22" rx="11.0" fill="#0f1b2d" stroke="#35557c" stroke-width="1" />
+<text x="1190.0" y="234.85" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="600" fill="#9fb0c6" text-anchor="middle" letter-spacing="0" opacity="1">verdict + confidence</text>
+<text x="1124" y="260" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="600" fill="#6fdc9a" text-anchor="start" letter-spacing="0" opacity="1">→ investigations</text>
+<rect x="1224" y="136" width="38" height="18" rx="9.0" fill="#3a2c0c" stroke="#f2b84b" stroke-width="1" />
+<text x="1243.0" y="148.5" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10" font-weight="800" fill="#f2b84b" text-anchor="middle" letter-spacing="0" opacity="1">LLM</text>
+<line x1="1190.0" y1="270" x2="1190.0" y2="292" stroke="#6f8199" stroke-width="1.5" stroke-dasharray="2 4"/>
+<path d="M586,128 C586,94 666,94 666,126" fill="none" stroke="#f2b84b" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#arrA)"/>
+<text x="626" y="88" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="600" fill="#f2b84b" text-anchor="middle" letter-spacing="0" opacity="1">fewer than 2 sources: search once more</text>
+<rect x="160" y="292" width="1120" height="46" rx="23" fill="#0e1a2c" stroke="#6f8199" stroke-width="1.2" stroke-dasharray="6 5" />
+<text x="178" y="320" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="800" fill="#9fb0c6" text-anchor="start" letter-spacing="1.5" opacity="1">SHARED STATE</text>
+<rect x="320" y="303" width="46.599999999999994" height="24" rx="12.0" fill="#16273f" stroke="#3a5a85" stroke-width="1" />
+<text x="343.3" y="319.2" font-family="'JetBrains Mono', 'DejaVu Sans Mono', Consolas, monospace" font-size="12" font-weight="500" fill="#c9d8ec" text-anchor="middle" letter-spacing="0" opacity="1">url</text>
+<rect x="378.6" y="303" width="79.39999999999999" height="24" rx="12.0" fill="#16273f" stroke="#3a5a85" stroke-width="1" />
+<text x="418.3" y="319.2" font-family="'JetBrains Mono', 'DejaVu Sans Mono', Consolas, monospace" font-size="12" font-weight="500" fill="#c9d8ec" text-anchor="middle" letter-spacing="0" opacity="1">article</text>
+<rect x="470.0" y="303" width="79.39999999999999" height="24" rx="12.0" fill="#16273f" stroke="#3a5a85" stroke-width="1" />
+<text x="509.7" y="319.2" font-family="'JetBrains Mono', 'DejaVu Sans Mono', Consolas, monospace" font-size="12" font-weight="500" fill="#c9d8ec" text-anchor="middle" letter-spacing="0" opacity="1">sources</text>
+<rect x="561.4" y="303" width="71.19999999999999" height="24" rx="12.0" fill="#16273f" stroke="#3a5a85" stroke-width="1" />
+<text x="597.0" y="319.2" font-family="'JetBrains Mono', 'DejaVu Sans Mono', Consolas, monospace" font-size="12" font-weight="500" fill="#c9d8ec" text-anchor="middle" letter-spacing="0" opacity="1">claims</text>
+<rect x="644.5999999999999" y="303" width="71.19999999999999" height="24" rx="12.0" fill="#16273f" stroke="#3a5a85" stroke-width="1" />
+<text x="680.1999999999999" y="319.2" font-family="'JetBrains Mono', 'DejaVu Sans Mono', Consolas, monospace" font-size="12" font-weight="500" fill="#c9d8ec" text-anchor="middle" letter-spacing="0" opacity="1">memory</text>
+<rect x="727.8" y="303" width="87.6" height="24" rx="12.0" fill="#16273f" stroke="#3a5a85" stroke-width="1" />
+<text x="771.5999999999999" y="319.2" font-family="'JetBrains Mono', 'DejaVu Sans Mono', Consolas, monospace" font-size="12" font-weight="500" fill="#c9d8ec" text-anchor="middle" letter-spacing="0" opacity="1">verdicts</text>
+<rect x="827.4" y="303" width="71.19999999999999" height="24" rx="12.0" fill="#16273f" stroke="#3a5a85" stroke-width="1" />
+<text x="863.0" y="319.2" font-family="'JetBrains Mono', 'DejaVu Sans Mono', Consolas, monospace" font-size="12" font-weight="500" fill="#c9d8ec" text-anchor="middle" letter-spacing="0" opacity="1">report</text>
+<rect x="910.5999999999999" y="303" width="71.19999999999999" height="24" rx="12.0" fill="#16273f" stroke="#3a5a85" stroke-width="1" />
+<text x="946.1999999999999" y="319.2" font-family="'JetBrains Mono', 'DejaVu Sans Mono', Consolas, monospace" font-size="12" font-weight="500" fill="#c9d8ec" text-anchor="middle" letter-spacing="0" opacity="1">errors</text>
+<text x="1264" y="320" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#6f8199" text-anchor="end" letter-spacing="0" opacity="1">a failing step adds to errors; the graph carries on</text>
+<rect x="20" y="378" width="520" height="515" rx="18" fill="#0f1b2e" stroke="#33507a" stroke-width="1.4" />
+<text x="42" y="412" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="17" font-weight="700" fill="#e8eef7" text-anchor="start" letter-spacing="0" opacity="1">LLM routing</text>
+<rect x="150" y="396" width="54" height="20" rx="10.0" fill="#3a2c0c" stroke="#f2b84b" stroke-width="1" />
+<text x="177.0" y="409.5" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10" font-weight="800" fill="#f2b84b" text-anchor="middle" letter-spacing="0" opacity="1">LLM</text>
+<text x="214" y="411" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#9fb0c6" text-anchor="start" letter-spacing="0" opacity="1">= step uses it</text>
+<text x="42" y="436" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#9fb0c6" text-anchor="start" letter-spacing="0" opacity="1">Every call has a hard deadline: a stuck provider is abandoned, the next one answers.</text>
+<text x="42" y="491" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13" font-weight="800" fill="#f2b84b" text-anchor="start" letter-spacing="1" opacity="1">SMART</text>
+<rect x="104" y="464" width="126" height="50" rx="11" fill="#16253d" stroke="#3a5a85" stroke-width="1.2" />
+<text x="167" y="486" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="700" fill="#e8eef7" text-anchor="middle" letter-spacing="0" opacity="1">Gemini</text>
+<text x="167" y="503" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10.5" font-weight="400" fill="#9fb0c6" text-anchor="middle" letter-spacing="0" opacity="1">3.5 Flash</text>
+<line x1="232" y1="489" x2="251" y2="489" stroke="#f2b84b" stroke-width="1.8" marker-end="url(#arrA)"/>
+<rect x="254" y="464" width="126" height="50" rx="11" fill="#16253d" stroke="#3a5a85" stroke-width="1.2" />
+<text x="317" y="486" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="700" fill="#e8eef7" text-anchor="middle" letter-spacing="0" opacity="1">Groq</text>
+<text x="317" y="503" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10.5" font-weight="400" fill="#9fb0c6" text-anchor="middle" letter-spacing="0" opacity="1">gpt-oss-120b</text>
+<line x1="382" y1="489" x2="401" y2="489" stroke="#f2b84b" stroke-width="1.8" marker-end="url(#arrA)"/>
+<rect x="404" y="464" width="126" height="50" rx="11" fill="#0f2a1c" stroke="#13aa52" stroke-width="1.2" />
+<text x="467" y="486" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="700" fill="#e8eef7" text-anchor="middle" letter-spacing="0" opacity="1">Mistral</text>
+<text x="467" y="503" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10.5" font-weight="400" fill="#9fb0c6" text-anchor="middle" letter-spacing="0" opacity="1">local · Ollama</text>
+<text x="42" y="559" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13" font-weight="800" fill="#f2b84b" text-anchor="start" letter-spacing="1" opacity="1">CHEAP</text>
+<rect x="104" y="532" width="126" height="50" rx="11" fill="#16253d" stroke="#3a5a85" stroke-width="1.2" />
+<text x="167" y="554" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="700" fill="#e8eef7" text-anchor="middle" letter-spacing="0" opacity="1">Gemini</text>
+<text x="167" y="571" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10.5" font-weight="400" fill="#9fb0c6" text-anchor="middle" letter-spacing="0" opacity="1">3.5 Flash-Lite</text>
+<line x1="232" y1="557" x2="251" y2="557" stroke="#f2b84b" stroke-width="1.8" marker-end="url(#arrA)"/>
+<rect x="254" y="532" width="126" height="50" rx="11" fill="#16253d" stroke="#3a5a85" stroke-width="1.2" />
+<text x="317" y="554" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="700" fill="#e8eef7" text-anchor="middle" letter-spacing="0" opacity="1">Groq</text>
+<text x="317" y="571" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10.5" font-weight="400" fill="#9fb0c6" text-anchor="middle" letter-spacing="0" opacity="1">gpt-oss-20b</text>
+<line x1="382" y1="557" x2="401" y2="557" stroke="#f2b84b" stroke-width="1.8" marker-end="url(#arrA)"/>
+<rect x="404" y="532" width="126" height="50" rx="11" fill="#0f2a1c" stroke="#13aa52" stroke-width="1.2" />
+<text x="467" y="554" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="700" fill="#e8eef7" text-anchor="middle" letter-spacing="0" opacity="1">Mistral</text>
+<text x="467" y="571" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10.5" font-weight="400" fill="#9fb0c6" text-anchor="middle" letter-spacing="0" opacity="1">local · Ollama</text>
+<text x="104" y="610" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="500" fill="#f2b84b" text-anchor="start" letter-spacing="0" opacity="1">on rate limit (429), timeout or outage →</text>
+<text x="42" y="640" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#9fb0c6" text-anchor="start" letter-spacing="0" opacity="1">Local Mistral is free and unlimited: it keeps the project working offline.</text>
+<line x1="42" y1="664" x2="518" y2="664" stroke="#274064" stroke-width="1"/>
+<text x="42" y="692" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#e8eef7" text-anchor="start" letter-spacing="0" opacity="1">External services (all on free tiers)</text>
+<circle cx="52" cy="726" r="6" fill="#5aa9ff"/>
+<text x="68" y="731" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13.5" font-weight="700" fill="#e8eef7" text-anchor="start" letter-spacing="0" opacity="1">Tavily</text>
+<text x="68" y="749" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#9fb0c6" text-anchor="start" letter-spacing="0" opacity="1">news search · results cached 7 days · credit counter</text>
+<circle cx="52" cy="768" r="6" fill="#5aa9ff"/>
+<text x="68" y="773" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13.5" font-weight="700" fill="#e8eef7" text-anchor="start" letter-spacing="0" opacity="1">trafilatura</text>
+<text x="68" y="791" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#9fb0c6" text-anchor="start" letter-spacing="0" opacity="1">clean article text from any web page</text>
+<circle cx="52" cy="810" r="6" fill="#13aa52"/>
+<text x="68" y="815" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13.5" font-weight="700" fill="#e8eef7" text-anchor="start" letter-spacing="0" opacity="1">Voyage AI</text>
+<text x="68" y="833" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#9fb0c6" text-anchor="start" letter-spacing="0" opacity="1">voyage-4-lite · 1024-dim embeddings via Atlas</text>
+<text x="42" y="866" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#6f8199" text-anchor="start" letter-spacing="0" opacity="1">Every provider needs only a free key; nothing here costs money.</text>
+<rect x="560" y="378" width="820" height="515" rx="18" fill="#0e2418" stroke="#13aa52" stroke-width="2" />
+<circle cx="590" cy="408" r="11" fill="#13aa52"/>
+<path d="M590,399 q6,8 0,18 q-6,-10 0,-18z" fill="#04210f"/>
+<text x="612" y="414" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="18" font-weight="700" fill="#e8eef7" text-anchor="start" letter-spacing="0" opacity="1">MongoDB Atlas</text>
+<text x="1360" y="414" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#8fd9ad" text-anchor="end" letter-spacing="0" opacity="1">free M0 cluster · database news_investigator</text>
+<rect x="580" y="444" width="250" height="150" rx="12" fill="#10261a" stroke="#2a6b44" stroke-width="1.2" />
+<text x="594" y="470" font-family="'JetBrains Mono', 'DejaVu Sans Mono', Consolas, monospace" font-size="15.5" font-weight="700" fill="#e8eef7" text-anchor="start" letter-spacing="0" opacity="1">articles</text>
+<text x="594" y="493" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#b9ddc8" text-anchor="start" letter-spacing="0" opacity="1">fetched text and metadata</text>
+<text x="594" y="510" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#b9ddc8" text-anchor="start" letter-spacing="0" opacity="1">unique index on url:</text>
+<text x="594" y="527" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#b9ddc8" text-anchor="start" letter-spacing="0" opacity="1">re-fetching never duplicates</text>
+<rect x="845" y="444" width="250" height="150" rx="12" fill="#12301f" stroke="#13aa52" stroke-width="2.2" />
+<text x="859" y="470" font-family="'JetBrains Mono', 'DejaVu Sans Mono', Consolas, monospace" font-size="15.5" font-weight="700" fill="#e8eef7" text-anchor="start" letter-spacing="0" opacity="1">claims</text>
+<text x="859" y="493" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#b9ddc8" text-anchor="start" letter-spacing="0" opacity="1">text · status · evidence · embedding</text>
+<text x="859" y="510" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#b9ddc8" text-anchor="start" letter-spacing="0" opacity="1">unverified → corroborated /</text>
+<text x="859" y="527" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#b9ddc8" text-anchor="start" letter-spacing="0" opacity="1">disputed / contradicted</text>
+<rect x="859" y="552" width="222" height="26" rx="13.0" fill="#13aa52" stroke="#13aa52" stroke-width="1" />
+<text x="970.0" y="569.025" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="800" fill="#04210f" text-anchor="middle" letter-spacing="0" opacity="1">Atlas Vector Search · cosine · 1024-d</text>
+<rect x="1110" y="444" width="250" height="150" rx="12" fill="#10261a" stroke="#2a6b44" stroke-width="1.2" />
+<text x="1124" y="470" font-family="'JetBrains Mono', 'DejaVu Sans Mono', Consolas, monospace" font-size="15.5" font-weight="700" fill="#e8eef7" text-anchor="start" letter-spacing="0" opacity="1">entities</text>
+<text x="1124" y="493" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#b9ddc8" text-anchor="start" letter-spacing="0" opacity="1">people, organisations, places</text>
+<text x="1124" y="510" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#b9ddc8" text-anchor="start" letter-spacing="0" opacity="1">unique key: normalised name</text>
+<text x="1124" y="527" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#b9ddc8" text-anchor="start" letter-spacing="0" opacity="1">links claims to the graph</text>
+<rect x="580" y="624" width="250" height="120" rx="12" fill="#10261a" stroke="#2a6b44" stroke-width="1.2" />
+<text x="594" y="650" font-family="'JetBrains Mono', 'DejaVu Sans Mono', Consolas, monospace" font-size="15.5" font-weight="700" fill="#e8eef7" text-anchor="start" letter-spacing="0" opacity="1">searches</text>
+<text x="594" y="673" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#b9ddc8" text-anchor="start" letter-spacing="0" opacity="1">cached Tavily results</text>
+<text x="594" y="690" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#b9ddc8" text-anchor="start" letter-spacing="0" opacity="1">TTL index: MongoDB deletes</text>
+<text x="594" y="707" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#b9ddc8" text-anchor="start" letter-spacing="0" opacity="1">them after 7 days</text>
+<rect x="845" y="624" width="250" height="120" rx="12" fill="#10261a" stroke="#2a6b44" stroke-width="1.2" />
+<text x="859" y="650" font-family="'JetBrains Mono', 'DejaVu Sans Mono', Consolas, monospace" font-size="15.5" font-weight="700" fill="#e8eef7" text-anchor="start" letter-spacing="0" opacity="1">investigations</text>
+<text x="859" y="673" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#b9ddc8" text-anchor="start" letter-spacing="0" opacity="1">one document per run:</text>
+<text x="859" y="690" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#b9ddc8" text-anchor="start" letter-spacing="0" opacity="1">steps are saved as they happen,</text>
+<text x="859" y="707" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#b9ddc8" text-anchor="start" letter-spacing="0" opacity="1">so a crash leaves a partial record</text>
+<rect x="1110" y="624" width="250" height="120" rx="12" fill="#10261a" stroke="#2a6b44" stroke-width="1.2" />
+<text x="1124" y="650" font-family="'JetBrains Mono', 'DejaVu Sans Mono', Consolas, monospace" font-size="15.5" font-weight="700" fill="#e8eef7" text-anchor="start" letter-spacing="0" opacity="1">usage</text>
+<text x="1124" y="673" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#b9ddc8" text-anchor="start" letter-spacing="0" opacity="1">monthly search-credit counter</text>
+<text x="1124" y="690" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#b9ddc8" text-anchor="start" letter-spacing="0" opacity="1">the tool refuses to search</text>
+<text x="1124" y="707" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.8" font-weight="400" fill="#b9ddc8" text-anchor="start" letter-spacing="0" opacity="1">past the free budget</text>
+<path d="M814.0,338 C814.0,410 915,372 915,441" fill="none" stroke="#13aa52" stroke-width="3" marker-end="url(#arrG)"/>
+<rect x="931" y="414" width="178" height="22" rx="11.0" fill="#0b3b20" stroke="#13aa52" stroke-width="1" />
+<text x="1020.0" y="429.025" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#9ae6b4" text-anchor="middle" letter-spacing="0" opacity="1">recall: $vectorSearch</text>
+<rect x="580" y="764" width="780" height="44" rx="11" fill="#0b2d1b" stroke="#2a6b44" stroke-width="1" />
+<text x="596" y="783" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="800" fill="#9ae6b4" text-anchor="start" letter-spacing="0" opacity="1">Timeline page</text>
+<text x="596" y="799" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#b9ddc8" text-anchor="start" letter-spacing="0" opacity="1">one aggregation pipeline:</text>
+<text x="784" y="792" font-family="'JetBrains Mono', 'DejaVu Sans Mono', Consolas, monospace" font-size="13" font-weight="600" fill="#e8eef7" text-anchor="start" letter-spacing="0" opacity="1">$vectorSearch  →  $unwind  →  $lookup(articles)  →  $sort</text>
+<rect x="580" y="818" width="780" height="44" rx="11" fill="#0b2d1b" stroke="#2a6b44" stroke-width="1" />
+<text x="596" y="837" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="800" fill="#9ae6b4" text-anchor="start" letter-spacing="0" opacity="1">Claim dedup</text>
+<text x="596" y="853" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#b9ddc8" text-anchor="start" letter-spacing="0" opacity="1">same fact, new wording:</text>
+<text x="784" y="846" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="600" fill="#e8eef7" text-anchor="start" letter-spacing="0" opacity="1">cosine ≥ 0.985 and same numbers → merge   ·   0.93–0.985 → LLM judge   ·   below → keep</text>
+<text x="30" y="912" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#9fb0c6" text-anchor="start" letter-spacing="0" opacity="1">Streamlit UI reads it all: Investigate · History · Claims · Timeline · Graph</text>
+<text x="1370" y="912" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#6f8199" text-anchor="end" letter-spacing="0" opacity="1">green = MongoDB Atlas   ·   amber = LLM cascade   ·   dashed = shared state</text>
+</svg>
