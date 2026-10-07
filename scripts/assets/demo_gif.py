@@ -1,7 +1,7 @@
 """Record a real investigation in the app and turn it into an animated GIF for the README.
 
 Needs the app running on :8501. Run:
-    uv run --with playwright --with pillow python scratch/23_demo_gif.py
+    uv run --with playwright --with pillow python scripts/assets/demo_gif.py
 """
 import io
 from pathlib import Path
@@ -10,7 +10,7 @@ from PIL import Image
 from playwright.sync_api import sync_playwright
 
 URL = "https://www.cnbc.com/2026/09/10/ecb-interest-rate-hike-lagarde-iran.html"
-OUT = Path(__file__).resolve().parent.parent / "docs" / "img" / "demo.gif"
+OUT = Path(__file__).resolve().parents[2] / "docs" / "img" / "demo.gif"
 WIDTH = 960  # output width in pixels
 
 frames: list[tuple[Image.Image, int]] = []  # (image, duration in ms)

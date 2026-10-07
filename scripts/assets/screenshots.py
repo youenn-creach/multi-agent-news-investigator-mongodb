@@ -1,12 +1,12 @@
 """Capture README screenshots. Needs the app running on :8501 and Playwright's Chromium.
 
-Run: uv run --with playwright python scratch/13_screenshots.py
+Run: uv run --with playwright python scripts/assets/screenshots.py
 """
 from pathlib import Path
 
 from playwright.sync_api import sync_playwright
 
-OUT = Path(__file__).resolve().parent.parent / "docs" / "img"
+OUT = Path(__file__).resolve().parents[2] / "docs" / "img"
 OUT.mkdir(parents=True, exist_ok=True)
 BASE = "http://localhost:8501"
 

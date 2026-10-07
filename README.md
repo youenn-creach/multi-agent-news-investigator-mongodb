@@ -1,5 +1,7 @@
 # Multi-Agent News Investigator
 
+![Python 3.12+](https://img.shields.io/badge/python-3.12%2B-blue) ![License: MIT](https://img.shields.io/badge/license-MIT-green) ![MongoDB Atlas Vector Search](https://img.shields.io/badge/MongoDB-Atlas%20Vector%20Search-13aa52) ![LangGraph](https://img.shields.io/badge/agents-LangGraph-1c3c3c)
+
 **Paste a news article URL. A team of specialist AI agents reads it, extracts its claims, looks for independent coverage, remembers what it has seen before, and writes a sourced reliability report.**
 
 Built with **LangGraph**, **MongoDB Atlas** (including **Vector Search**), **Voyage AI** embeddings and a **free-tier-only** mix of cloud and local LLMs.
@@ -155,7 +157,7 @@ uv run python -m investigator.cli "<article-url>"   # command line
 uv run pytest        # 26 offline tests: no network, database or API keys needed
 ```
 
-They cover the claim-status rules, the deduplication bands (including the numbers guard), the hard deadline on stuck LLM calls, the article-fetching guard, domain matching, graph routing, the timeline pipelines and the defusing of hostile text in the graph page. The scripts in `scratch/` are different: they are small live checks against real services.
+They cover the claim-status rules, the deduplication bands (including the numbers guard), the hard deadline on stuck LLM calls, the article-fetching guard, domain matching, graph routing, the timeline pipelines and the defusing of hostile text in the graph page. The scripts in [`scripts/`](scripts/README.md) are different: live checks against real services, and the generators for the README images.
 
 ## Project layout
 
@@ -177,7 +179,7 @@ src/investigator/
   settings.py               environment variables with friendly errors
   cli.py, setup.py          command-line entry points
 tests/                      offline unit tests (uv run pytest)
-scratch/                    small numbered scripts used to test each piece
+scripts/                    live checks, README-asset generators, calibration (see scripts/README.md)
 LEARNING_LOG.md             what I learned, one line per session
 docs/PLAN.md                the original learning plan
 ```
@@ -201,3 +203,7 @@ docs/PLAN.md                the original learning plan
 ## How it was built
 
 Built step by step with [Claude Code](https://claude.com/claude-code) as a learning project about agentic architecture. [`LEARNING_LOG.md`](LEARNING_LOG.md) records what was learned at each step, and [`docs/PLAN.md`](docs/PLAN.md) holds the original plan.
+
+## License
+
+[MIT](LICENSE): free to use, copy, modify and share, as long as the copyright notice is kept. Provided as is, without warranty.

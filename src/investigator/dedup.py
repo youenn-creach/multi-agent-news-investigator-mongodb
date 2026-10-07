@@ -7,7 +7,7 @@ memory clean, but merging two *different* claims would corrupt a fact-checker, s
   GREY_ZONE <= cosine < AUTO_MERGE       -> a strict LLM judge decides
   below GREY_ZONE                        -> different claims
 
-Thresholds were chosen by looking at real claim pairs (scratch/14_dup_explore.py).
+Thresholds were chosen by looking at real claim pairs (scripts/calibration/dedup_thresholds.py).
 Atlas reports cosine as (1 + cos) / 2, hence the conversion.
 """
 import re

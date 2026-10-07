@@ -1,13 +1,13 @@
 """Render the GitHub social preview image (1280x640) from an inline HTML card.
 
-Run: uv run --with playwright python scratch/22_social_preview.py
+Run: uv run --with playwright python scripts/assets/social_preview.py
 Then upload docs/img/social-preview.png in the repo: Settings -> Social preview.
 """
 from pathlib import Path
 
 from playwright.sync_api import sync_playwright
 
-OUT = Path(__file__).resolve().parent.parent / "docs" / "img" / "social-preview.png"
+OUT = Path(__file__).resolve().parents[2] / "docs" / "img" / "social-preview.png"
 
 HTML = """
 <html><body style="margin:0;width:1280px;height:640px;font-family:'Inter','Segoe UI',Helvetica,Arial,sans-serif;
