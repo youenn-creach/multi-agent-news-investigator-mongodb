@@ -123,7 +123,7 @@ def historian(state: InvestigationState) -> dict:
             merge_existing(apply=True, only_ids=set(late), quiet=True)  # they skipped deduplication at save time
         vectors = embed_texts([c["text"] for c in state["claims"]], "query")  # one batched request
         memory, seen = [], set()
-        for claim, vec in zip(state["claims"], vectors):
+        for claim, vec in zip(state["claims"], vectors, strict=True):
             for hit in similar_claims(claim["text"], k=3, min_score=MEMORY_MIN_SCORE, vector=vec):
                 earlier = [u for u in hit["article_urls"] if u != state["url"]]
                 if not earlier or hit["text"] in seen:

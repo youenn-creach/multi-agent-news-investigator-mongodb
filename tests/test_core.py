@@ -3,8 +3,9 @@ import time
 
 import pytest
 from langchain_core.runnables import RunnableLambda
+from pydantic import ValidationError
 
-from investigator import dedup, graph, timeline
+from investigator import dedup, graph, graphview, timeline
 from investigator.extraction import Extraction, ExtractedClaim, normalize, status_from_evidence
 from investigator.llm import with_deadline
 from investigator.tools import search
@@ -127,6 +128,25 @@ def test_pipeline_description_hides_the_vector():
 
 # ---------- schemas ----------
 def test_extraction_schema_rejects_unknown_claim_type():
-    with pytest.raises(Exception):
+    with pytest.raises(ValidationError):
         ExtractedClaim(text="x", subject="y", type="rumour")
     assert Extraction(claims=[], entities=[]).claims == []
+
+
+# ---------- knowledge graph page ----------
+def test_graph_html_cannot_be_broken_out_of_by_hostile_text():
+    evil = "</script><img src=x onerror=alert(1)>"
+    html = graphview.build_graph_html(
+        [{"_id": 1, "text": evil + " rate rose", "status": "unverified", "article_urls": ["https://x.test/" + evil]}],
+        [{"_id": 2, "name": "Central Bank", "type": evil}],
+    )
+    assert "<img src=x" not in html
+    assert evil not in html
+    bs = chr(92)  # a backslash: the page stores text as JSON, so "‹" appears as <backslash>u2039
+    assert f"{bs}u2039/script{bs}u203a" in html  # still present, but "<" and ">" are defused
+
+
+def test_graph_labels_show_apostrophes_as_is():
+    html = graphview.build_graph_html([{"_id": 1, "text": "The bank's rate", "article_urls": []}], [])
+    assert "&#x27;" not in html  # no HTML-escaping artefacts on screen
+    assert f"bank{chr(92)}u0027s rate" in html  # JSON-encoded apostrophe: the browser shows a normal '

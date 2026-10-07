@@ -1,13 +1,11 @@
 """Streamlit UI. Run with: uv run streamlit run app.py"""
-from html import escape
-from urllib.parse import urlparse
+from datetime import datetime, timedelta
 
 import streamlit as st
-from pyvis.network import Network
 
 from investigator import timeline
 from investigator.db import get_db
-from investigator.extraction import normalize
+from investigator.graphview import STATUS_COLOR, build_graph_html
 from investigator.investigation import run_investigation
 
 st.set_page_config(page_title="News Investigator", page_icon="🕵️", layout="wide")
@@ -15,7 +13,6 @@ st.set_page_config(page_title="News Investigator", page_icon="🕵️", layout="
 VERDICT_BADGE = {
     "reliable": "🟢", "mostly_reliable": "🟢", "mixed": "🟡", "unreliable": "🔴", "unverifiable": "⚪",
 }
-STATUS_COLOR = {"corroborated": "#2e9e5b", "disputed": "#e0a030", "contradicted": "#d64545", "unverified": "#9aa0a6"}
 NODE_LABELS = {
     "hunter": "Fetching the article", "analyst": "Extracting claims", "searcher": "Searching for independent coverage",
     "broaden": "Coverage was thin: searching again", "historian": "Checking memory of past investigations",
@@ -34,7 +31,7 @@ def md_link(label: str, url: str) -> str:
 def show_report(inv: dict) -> None:
     report = inv.get("report")
     if not report:
-        st.info(f"No report (status: {inv.get('status')}).")
+        st.info(f"No report (status: {inv.get('status')}). {inv.get('error', '')}")
         return
     st.subheader(f"{VERDICT_BADGE.get(report['verdict'], '')} {report['verdict'].replace('_', ' ').title()}  ·  confidence {report['confidence']}")
     st.write(report["summary"])
@@ -104,10 +101,12 @@ def page_history() -> None:
     if not invs:
         st.info("No investigations yet.")
         return
-    labels = {
-        str(i["_id"]): f"{i['created_at']:%d %b %H:%M} · {VERDICT_BADGE.get(i.get('report', {}).get('verdict', ''), '⚙️')} {i['url'][:80]}"
-        for i in invs
-    }
+    def icon(i: dict) -> str:
+        if i.get("status") == "running" and datetime.utcnow() - i["created_at"] > timedelta(minutes=30):
+            return "⛔"  # the process stopped before it finished
+        return VERDICT_BADGE.get(i.get("report", {}).get("verdict", ""), "⚙️")
+
+    labels = {str(i["_id"]): f"{i['created_at']:%d %b %H:%M} · {icon(i)} {i['url'][:80]}" for i in invs}
     chosen = st.selectbox("Investigation", list(labels), format_func=labels.get)
     inv = get_db().investigations.find_one({"_id": next(i["_id"] for i in invs if str(i["_id"]) == chosen)})
     st.markdown(md_link(inv["url"], inv["url"]))
@@ -149,24 +148,7 @@ def page_graph() -> None:
         st.info("Nothing to show yet: run an investigation first.")
         return
     entities = list(db.entities.find({}).limit(200))
-    net = Network(height="620px", width="100%", bgcolor="#0e1117", font_color="#fafafa", cdn_resources="in_line")
-    n_nodes = 0
-    for c in claims:
-        net.add_node(f"c{c['_id']}", label=escape(c["text"][:40]) + "…", title=escape(c["text"]), color=STATUS_COLOR.get(c.get("status"), "#9aa0a6"), shape="dot", size=14)
-        n_nodes += 1
-        for u in c.get("article_urls", []):
-            if u not in net.get_nodes():
-                net.add_node(u, label=escape(urlparse(u).netloc or u[:30]), title=escape(u), color="#c77dff", shape="square", size=10)
-                n_nodes += 1
-            net.add_edge(f"c{c['_id']}", u)
-        for e in entities:
-            if len(e["name"]) > 3 and normalize(e["name"]) in normalize(c["text"]):
-                if f"e{e['_id']}" not in net.get_nodes() and n_nodes < 50:
-                    net.add_node(f"e{e['_id']}", label=escape(e["name"]), title=escape(e["type"]), color="#4c9be8", size=18)
-                    n_nodes += 1
-                if f"e{e['_id']}" in net.get_nodes():
-                    net.add_edge(f"e{e['_id']}", f"c{c['_id']}")
-    st.iframe(net.generate_html(), height=640)
+    st.iframe(build_graph_html(claims, entities), height=640)
 
 
 # ---------- timeline ----------

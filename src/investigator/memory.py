@@ -43,7 +43,7 @@ def embed_new_claims() -> list:
     if not todo:
         return []
     vectors = embed_texts([c["text"] for c in todo], "document")
-    claims.bulk_write([UpdateOne({"_id": c["_id"]}, {"$set": {"embedding": v}}) for c, v in zip(todo, vectors)])
+    claims.bulk_write([UpdateOne({"_id": c["_id"]}, {"$set": {"embedding": v}}) for c, v in zip(todo, vectors, strict=True)])
     return [c["_id"] for c in todo]
 
 

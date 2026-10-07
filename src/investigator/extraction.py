@@ -110,7 +110,7 @@ def save_extraction(article_url: str, extraction: Extraction) -> dict:
         vectors = [None] * len(new_claims)  # embedding down: store without vectors, embed later
 
     merged, batch = 0, []  # batch: claims already handled in this article (the index may lag behind)
-    for c, vec in zip(new_claims, vectors):
+    for c, vec in zip(new_claims, vectors, strict=True):
         dup_id = None
         if vec is not None:
             for other_vec, other_id, other_text in batch:

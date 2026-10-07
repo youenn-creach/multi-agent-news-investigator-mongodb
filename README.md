@@ -152,10 +152,10 @@ uv run python -m investigator.cli "<article-url>"   # command line
 ## Tests
 
 ```bash
-uv run pytest        # 24 offline tests: no network, database or API keys needed
+uv run pytest        # 26 offline tests: no network, database or API keys needed
 ```
 
-They cover the claim-status rules, the deduplication bands (including the numbers guard), the hard deadline on stuck LLM calls, the article-fetching guard, domain matching, graph routing and the timeline pipelines. The scripts in `scratch/` are different: they are small live checks against real services.
+They cover the claim-status rules, the deduplication bands (including the numbers guard), the hard deadline on stuck LLM calls, the article-fetching guard, domain matching, graph routing, the timeline pipelines and the defusing of hostile text in the graph page. The scripts in `scratch/` are different: they are small live checks against real services.
 
 ## Project layout
 
@@ -169,6 +169,7 @@ src/investigator/
   memory.py                 Atlas Vector Search over claims
   dedup.py                  semantic claim deduplication
   timeline.py               timelines as MongoDB aggregation pipelines
+  graphview.py              knowledge-graph page (with defused untrusted text)
   embeddings.py             Voyage AI client with retry
   db.py                     MongoDB access
   tools/articles.py         fetch + cache an article

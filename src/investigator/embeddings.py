@@ -39,6 +39,8 @@ def embed_texts(texts: list[str], input_type: Literal["document", "query"] = "do
     for i in range(0, len(texts), BATCH):
         resp = _post_with_backoff({"input": texts[i : i + BATCH], "model": MODEL, "input_type": input_type})
         vectors += [d["embedding"] for d in sorted(resp.json()["data"], key=lambda d: d["index"])]
+    if len(vectors) != len(texts):  # never silently drop or misalign claims
+        raise ValueError(f"embedding service returned {len(vectors)} vectors for {len(texts)} texts")
     return vectors
 
 
