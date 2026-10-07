@@ -12,10 +12,11 @@ Multi-agent news investigator (LangGraph + MongoDB Atlas + Voyage embeddings), a
 `llm.py` Gemini -> Groq -> Ollama cascade with timeouts; `db.py` Atlas; `tools/` article fetch + Tavily search (cached, credit counter); `extraction.py` claims/entities; `embeddings.py` Voyage via https://ai.mongodb.com/v1/embeddings (voyage-4-lite, 1024 dims, rate-limited: retry built in); `memory.py` Atlas Vector Search on claims; `dedup.py` semantic claim dedup (cosine bands + strict LLM judge + numbers guard); `graph.py` LangGraph hunter -> analyst -> searcher -> broaden -> historian -> skeptic -> writer; `investigation.py` runs and persists; `cli.py`.
 
 ## Status (2026-10-07)
-PRs #1 (pipeline), #2 (Streamlit UI), #3 (README) are merged. Semantic claim dedup (`dedup.py`) is committed on `feature/semantic-dedup` (not pushed). Timeline page (`timeline.py`, `page_timeline` in app.py) and README additions were written on top of it but are UNTESTED and uncommitted: next session, run `scratch/12_ui_smoke.py`, test both timeline modes, commit, then push. Also pending: GitHub About description and topics (`gh repo edit`). Further ideas: demo mode for a public deployment, evaluation set, source-reliability scoring.
+PRs #1-#3 merged. Local branch `feature/timeline` (NOT pushed) holds: semantic dedup, Timeline page, themed UI, demo GIF, social preview, a full audit with fixes and an offline test suite (`uv run pytest`). GitHub About description and topics are already set. Pending decisions for the owner: push + PR, a LICENSE (explained to owner, not chosen), uploading `docs/img/social-preview.png` in repo Settings, tidying `scratch/`.
 
 Project goal to keep in mind (subtly): the repo also showcases MongoDB Atlas, Vector Search and Voyage AI for agentic workloads.
 
 ## Quirks
+Tests are offline (no DB/keys); `scratch/` scripts are live checks. Run `uv run python -m investigator.setup` after pulling (indexes), `python -m investigator.dedup` for a duplicate dry-run.
 `gemini-3.7-flash` / `3.8-flash` often return 503; smart tier uses `gemini-3.5-flash`. Groq structured output needs `method="json_schema"`.
 Every LLM call is wrapped in `with_deadline` (llm.py): provider timeouts alone did not stop hangs.

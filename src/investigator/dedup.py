@@ -85,8 +85,11 @@ def find_duplicate(text: str, vector: list[float]) -> dict | None:
 
 
 # ---------- one-off clean-up of duplicates that were stored before dedup existed ----------
-def merge_existing(apply: bool = False) -> list[list[dict]]:
+def merge_existing(apply: bool = False, only_ids: set | None = None, quiet: bool = False) -> list[list[dict]]:
     """Find groups of duplicate claims already in the database; merge them if apply=True.
+
+    `only_ids` limits the search to pairs that involve at least one of those claims (used right
+    after new claims were embedded late); the older claim of a group is always the one kept.
 
     Usage: uv run python -m investigator.dedup          (dry run: only prints the plan)
            uv run python -m investigator.dedup --apply  (merges)
@@ -107,6 +110,8 @@ def merge_existing(apply: bool = False) -> list[list[dict]]:
         for j in range(i + 1, len(claims)):
             if root(i) == root(j):
                 continue
+            if only_ids is not None and claims[i]["_id"] not in only_ids and claims[j]["_id"] not in only_ids:
+                continue
             cos = cosine(claims[i]["embedding"], claims[j]["embedding"])
             if cos >= GREY_ZONE and is_duplicate(claims[i]["text"], claims[j]["text"], cos):
                 parent[root(j)] = root(i)  # the older claim stays
@@ -118,9 +123,10 @@ def merge_existing(apply: bool = False) -> list[list[dict]]:
 
     for g in groups:
         keep, rest = g[0], g[1:]
-        print(f"KEEP  {keep['text'][:90]}")
-        for r in rest:
-            print(f"  ←   {r['text'][:90]}")
+        if not quiet:
+            print(f"KEEP  {keep['text'][:90]}")
+            for r in rest:
+                print(f"  ←   {r['text'][:90]}")
         if not apply:
             continue
         urls = sorted({u for c in g for u in c["article_urls"]})
@@ -130,11 +136,28 @@ def merge_existing(apply: bool = False) -> list[list[dict]]:
         coll.update_one({"_id": keep["_id"]}, {"$set": {
             "article_urls": urls, "variants": variants, "evidence": evidence, "status": status_from_evidence(evidence)}})
         coll.delete_many({"_id": {"$in": [r["_id"] for r in rest]}})
-    print(f"\n{len(groups)} group(s) of duplicates; {'merged' if apply else 'dry run: nothing changed (add --apply to merge)'}")
+    if not quiet:
+        print(f"\n{len(groups)} group(s) of duplicates; {'merged' if apply else 'dry run: nothing changed (add --apply to merge)'}")
     return groups
+
+
+def tidy_evidence(apply: bool = False) -> int:
+    """Remove repeated evidence entries inside a claim (left by runs made before evidence was de-duplicated)."""
+    from investigator.extraction import status_from_evidence
+
+    coll, removed = get_db().claims, 0
+    for c in coll.find({"evidence.1": {"$exists": True}}, {"evidence": 1}):
+        unique = list({(e["verdict"], e["source"], e["article"]): e for e in c["evidence"]}.values())
+        if len(unique) < len(c["evidence"]):
+            removed += len(c["evidence"]) - len(unique)
+            if apply:
+                coll.update_one({"_id": c["_id"]}, {"$set": {"evidence": unique, "status": status_from_evidence(unique)}})
+    print(f"{removed} repeated evidence entr{'y' if removed == 1 else 'ies'} {'removed' if apply else 'found (dry run)'}")
+    return removed
 
 
 if __name__ == "__main__":
     import sys
 
     merge_existing(apply="--apply" in sys.argv)
+    tidy_evidence(apply="--apply" in sys.argv)

@@ -36,6 +36,8 @@ _ATTACH_ARTICLES = [
 def entity_pipeline(entity: dict) -> list[dict]:
     """Claims that mention an entity (by name or alias), as a dated timeline."""
     names = [n for n in [entity["name"], *entity.get("aliases", [])] if len(n) > 2]
+    if not names:
+        return [{"$match": {"_id": None}}]  # nothing to look for: empty result, not "everything"
     rx = {"$regex": "|".join(re.escape(n) for n in names), "$options": "i"}
     return [{"$match": {"$or": [{"text": rx}, {"variants": rx}, {"subject": rx}]}}, *_ATTACH_ARTICLES]
 

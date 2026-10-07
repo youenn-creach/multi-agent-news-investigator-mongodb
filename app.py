@@ -1,5 +1,6 @@
 """Streamlit UI. Run with: uv run streamlit run app.py"""
 from html import escape
+from urllib.parse import urlparse
 
 import streamlit as st
 from pyvis.network import Network
@@ -20,7 +21,13 @@ NODE_LABELS = {
     "broaden": "Coverage was thin: searching again", "historian": "Checking memory of past investigations",
     "skeptic": "Checking each claim against the evidence", "writer": "Writing the report",
 }
-NODE_ORDER = ["hunter", "analyst", "searcher", "historian", "skeptic", "writer"]
+STATUS_BADGE = {"corroborated": "green", "disputed": "orange", "contradicted": "red", "unverified": "gray"}
+
+
+def md_link(label: str, url: str) -> str:
+    """A markdown link that cannot be broken by brackets or parentheses in web-supplied titles and URLs."""
+    label = label.replace("[", "(").replace("]", ")")
+    return f"[{label}]({url.replace(')', '%29').replace(' ', '%20')})"
 
 
 # ---------- shared rendering ----------
@@ -46,7 +53,7 @@ def show_report(inv: dict) -> None:
     if report.get("sources"):
         st.markdown("**Sources that backed a claim**")
         for s in report["sources"]:
-            st.markdown(f"- [{s['title'] or s['source']}]({s['url']}) · {s['source']}")
+            st.markdown(f"- {md_link(s['title'] or s['source'], s['url'])} · {s['source']}")
     if report.get("previously_seen"):
         with st.expander(f"📚 Memory: {len(report['previously_seen'])} similar claims seen before"):
             for m in report["previously_seen"]:
@@ -69,11 +76,12 @@ def page_investigate() -> None:
     c2.metric("Claims in memory", db.claims.count_documents({}))
     c3.metric("Articles read", db.articles.count_documents({}))
     st.caption("Memory lives in MongoDB Atlas; similar claims are found with Atlas Vector Search over Voyage AI embeddings.")
-    if st.button("Investigate", type="primary", disabled=not url.strip()):
-        done: list[str] = []
+    if st.button("Investigate", type="primary"):
+        if not url.strip():
+            st.warning("Paste an article URL first.")
+            return
         with st.status("Investigation running…", expanded=True) as status:
             def on_step(node: str, delta: dict) -> None:
-                done.append(node)
                 msg = f"✓ {NODE_LABELS.get(node, node)}"
                 if delta.get("errors"):
                     msg += f"  ⚠ {'; '.join(delta['errors'])}"
@@ -102,7 +110,7 @@ def page_history() -> None:
     }
     chosen = st.selectbox("Investigation", list(labels), format_func=labels.get)
     inv = get_db().investigations.find_one({"_id": next(i["_id"] for i in invs if str(i["_id"]) == chosen)})
-    st.markdown(f"[{inv['url']}]({inv['url']})")
+    st.markdown(md_link(inv["url"], inv["url"]))
     show_report(inv)
     with st.expander("Step log"):
         for s in inv.get("steps", []):
@@ -114,18 +122,22 @@ def page_claims() -> None:
     st.caption("Every claim extracted so far, across all investigations, with its evidence trail.")
     statuses = st.multiselect("Status", list(STATUS_COLOR), default=list(STATUS_COLOR))
     query = st.text_input("Filter by text")
+    shown_max = 300  # one expander per claim: keep the page responsive
     claims = list(get_db().claims.find({"status": {"$in": statuses}}, {"embedding": 0}).sort("created_at", -1))
     if query:
         claims = [c for c in claims if query.lower() in c["text"].lower()]
-    st.caption(f"{len(claims)} claims")
-    for c in claims:
-        with st.expander(f"{c['status'].upper()} · {c['text'][:110]}"):
+    st.caption(f"{len(claims)} claims" + (f" (showing the newest {shown_max})" if len(claims) > shown_max else ""))
+    for c in claims[:shown_max]:
+        with st.expander(f"{c.get('status', 'unverified').upper()} · {c['text'][:110]}"):
             st.write(c["text"])
-            st.caption(f"type: {c['type']} · subject: {c['subject']} · seen in {len(c['article_urls'])} article(s)")
+            urls = c.get("article_urls", [])
+            st.caption(f"type: {c.get('type', '?')} · subject: {c.get('subject', '?')} · seen in {len(urls)} article(s)")
             for e in c.get("evidence", []):
-                st.markdown(f"- `{e['verdict']}` [{e['source'][:70]}]({e['source']}): {e['note']}")
-            for u in c["article_urls"]:
-                st.markdown(f"↳ [{u[:80]}]({u})")
+                st.markdown(f"- `{e['verdict']}` {md_link(e['source'][:70], e['source'])}: {e['note']}")
+            if c.get("variants"):
+                st.caption("Also worded as: " + " | ".join(c["variants"]))
+            for u in urls:
+                st.markdown(f"↳ {md_link(u[:80], u)}")
 
 
 def page_graph() -> None:
@@ -140,11 +152,11 @@ def page_graph() -> None:
     net = Network(height="620px", width="100%", bgcolor="#0e1117", font_color="#fafafa", cdn_resources="in_line")
     n_nodes = 0
     for c in claims:
-        net.add_node(f"c{c['_id']}", label=escape(c["text"][:40]) + "…", title=escape(c["text"]), color=STATUS_COLOR[c["status"]], shape="dot", size=14)
+        net.add_node(f"c{c['_id']}", label=escape(c["text"][:40]) + "…", title=escape(c["text"]), color=STATUS_COLOR.get(c.get("status"), "#9aa0a6"), shape="dot", size=14)
         n_nodes += 1
-        for u in c["article_urls"]:
+        for u in c.get("article_urls", []):
             if u not in net.get_nodes():
-                net.add_node(u, label=escape(u.split("/")[2]), title=escape(u), color="#c77dff", shape="square", size=10)
+                net.add_node(u, label=escape(urlparse(u).netloc or u[:30]), title=escape(u), color="#c77dff", shape="square", size=10)
                 n_nodes += 1
             net.add_edge(f"c{c['_id']}", u)
         for e in entities:
@@ -157,9 +169,7 @@ def page_graph() -> None:
     st.iframe(net.generate_html(), height=640)
 
 
-# ---------- navigation ----------
-STATUS_BADGE = {"corroborated": "green", "disputed": "orange", "contradicted": "red", "unverified": "gray"}
-
+# ---------- timeline ----------
 
 def page_timeline() -> None:
     st.title("⏳ Timeline")
@@ -182,7 +192,11 @@ def page_timeline() -> None:
         except Exception as e:
             st.error(f"Semantic search is unavailable right now ({type(e).__name__}). Try again in a minute.")
             return
-    events = timeline.run(pipeline)
+    try:
+        events = timeline.run(pipeline)
+    except Exception as e:
+        st.error(f"The MongoDB query failed ({type(e).__name__}). Is the Atlas Vector Search index ready? Run: uv run python -m investigator.setup")
+        return
     if not events:
         st.warning("No claims found for this selection.")
     by_date: dict[str, list[dict]] = {}
@@ -196,11 +210,13 @@ def page_timeline() -> None:
                 a = ev["article"]
                 score = f" · match {ev['score']:.2f}" if "score" in ev else ""
                 st.markdown(f"{ev['text']}")
-                st.caption(f":{STATUS_BADGE[ev['status']]}-badge[{ev['status']}]{score} · [{a['title'] or a['source']}]({a['url']}) · {a['source']}")
+                badge = STATUS_BADGE.get(ev["status"], "gray")
+                st.caption(f":{badge}-badge[{ev['status']}]{score} · {md_link(a['title'] or a['source'] or a['url'], a['url'])} · {a['source']}")
     with st.expander("Show the MongoDB pipeline behind this page"):
         st.code(timeline.describe(pipeline), language="json")
 
 
+# ---------- navigation ----------
 PAGES = {"🕵️ Investigate": page_investigate, "📜 History": page_history, "🧩 Claims": page_claims,
          "⏳ Timeline": page_timeline, "🕸️ Graph": page_graph}
 # ?page=history (or investigate / claims / graph) opens a page directly, so pages can be linked

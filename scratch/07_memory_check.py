@@ -13,7 +13,7 @@ CLAIMS = [
 save_extraction("https://example.test/a", Extraction(
     claims=[ExtractedClaim(text=t, subject="x", type="event") for t in CLAIMS], entities=[]))
 
-print("embedded:", embed_new_claims())
+print("embedded:", len(embed_new_claims()))
 print("waiting for the vector index (first run takes a minute or two)...")
 ensure_vector_index()
 

@@ -149,6 +149,14 @@ uv run python -m investigator.cli "<article-url>"   # command line
 - The Voyage free tier is rate-limited; the code waits and retries automatically.
 - `.env` is gitignored. Never commit it.
 
+## Tests
+
+```bash
+uv run pytest        # 24 offline tests: no network, database or API keys needed
+```
+
+They cover the claim-status rules, the deduplication bands (including the numbers guard), the hard deadline on stuck LLM calls, the article-fetching guard, domain matching, graph routing and the timeline pipelines. The scripts in `scratch/` are different: they are small live checks against real services.
+
 ## Project layout
 
 ```
@@ -165,7 +173,9 @@ src/investigator/
   db.py                     MongoDB access
   tools/articles.py         fetch + cache an article
   tools/search.py           Tavily search + cache + credit counter
+  settings.py               environment variables with friendly errors
   cli.py, setup.py          command-line entry points
+tests/                      offline unit tests (uv run pytest)
 scratch/                    small numbered scripts used to test each piece
 LEARNING_LOG.md             what I learned, one line per session
 docs/PLAN.md                the original learning plan
@@ -177,7 +187,8 @@ docs/PLAN.md                the original learning plan
 - **Claim deduplication is deliberately conservative.** Claims are merged only when they are near-identical in meaning and numbers, so some real duplicates stay separate rather than risk merging two different claims.
 - **Source quality is not scored.** A snippet from a blog and one from a central bank count the same.
 - **Paywalled or JavaScript-only pages** can't be read; the report then says so.
-- **No authentication.** It is meant to run locally; exposing it publicly would let anyone spend the free-tier quotas.
+- **Prompt injection is reduced, not eliminated.** Articles and search snippets are untrusted text that goes into LLM prompts. The prompts tell the models to treat it as data and ignore instructions inside it, and outputs are forced into strict schemas, but a determined attacker's page could still sway a verdict.
+- **No authentication.** It is meant to run locally; exposing it publicly would let anyone spend the free-tier quotas. The article fetcher refuses private and local network addresses, but that guard is best-effort (it does not stop DNS rebinding).
 - Free-tier model names and quotas change often; the cascade exists partly because of that.
 
 ## Roadmap
