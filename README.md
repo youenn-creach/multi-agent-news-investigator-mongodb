@@ -184,7 +184,7 @@ LEARNING_LOG.md             what I learned, one line per session
 docs/PLAN.md                the original learning plan
 ```
 
-## Limitations (honest ones)
+## Limitations
 
 - **Verification uses search snippets, not full source articles.** Good enough to confirm headline facts, weak for detailed numbers. Many claims end up *unclear*, which is the intended behaviour but means reports are often *mixed*.
 - **Claim deduplication is deliberately conservative.** Claims are merged only when they are near-identical in meaning and numbers, so some real duplicates stay separate rather than risk merging two different claims.
