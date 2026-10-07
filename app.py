@@ -4,6 +4,7 @@ from html import escape
 import streamlit as st
 from pyvis.network import Network
 
+from investigator import timeline
 from investigator.db import get_db
 from investigator.extraction import normalize
 from investigator.investigation import run_investigation
@@ -57,7 +58,17 @@ def page_investigate() -> None:
     st.title("🕵️ Investigate an article")
     st.caption("Paste a news article URL. Specialist agents fetch it, extract claims, look for independent coverage, "
                "compare with past investigations and write a sourced reliability report.")
-    url = st.text_input("Article URL", placeholder="https://www.example.com/news/...")
+    EXAMPLE = "https://www.cnbc.com/2026/09/10/ecb-interest-rate-hike-lagarde-iran.html"
+    st.text_input("Article URL", key="url_input", placeholder="https://www.example.com/news/...")
+    st.button("Use an example article", on_click=lambda: st.session_state.update(url_input=EXAMPLE), type="tertiary")
+    url = st.session_state.get("url_input", "")
+    st.caption("🔎 fetch → 🧩 extract claims → 🌐 find independent coverage → 📚 recall similar past claims → 🤨 judge each claim → ✍️ write the report")
+    db = get_db()
+    c1, c2, c3 = st.columns(3)
+    c1.metric("Investigations", db.investigations.count_documents({"status": "done"}))
+    c2.metric("Claims in memory", db.claims.count_documents({}))
+    c3.metric("Articles read", db.articles.count_documents({}))
+    st.caption("Memory lives in MongoDB Atlas; similar claims are found with Atlas Vector Search over Voyage AI embeddings.")
     if st.button("Investigate", type="primary", disabled=not url.strip()):
         done: list[str] = []
         with st.status("Investigation running…", expanded=True) as status:
@@ -147,7 +158,51 @@ def page_graph() -> None:
 
 
 # ---------- navigation ----------
-PAGES = {"🕵️ Investigate": page_investigate, "📜 History": page_history, "🧩 Claims": page_claims, "🕸️ Graph": page_graph}
+STATUS_BADGE = {"corroborated": "green", "disputed": "orange", "contradicted": "red", "unverified": "gray"}
+
+
+def page_timeline() -> None:
+    st.title("⏳ Timeline")
+    st.caption("Claims in chronological order, each linked to the article that made it. Every timeline is a single MongoDB aggregation pipeline.")
+    mode = st.radio("Build the timeline", ["By entity", "By topic (semantic search)"], horizontal=True)
+    if mode == "By entity":
+        entities = timeline.entities_with_claims()
+        if not entities:
+            st.info("No entities yet: run an investigation first.")
+            return
+        chosen = st.selectbox("Entity", entities, format_func=lambda e: f"{e['name']}  ({e['type']}, {e['mentions']} claim(s))")
+        pipeline = timeline.entity_pipeline(chosen)
+    else:
+        topic = st.text_input("Topic", placeholder="e.g. central bank raises borrowing costs")
+        if not topic.strip():
+            st.info("Describe a topic in your own words. Claims are matched by meaning, not by keywords.")
+            return
+        try:
+            pipeline = timeline.topic_pipeline(topic.strip())
+        except Exception as e:
+            st.error(f"Semantic search is unavailable right now ({type(e).__name__}). Try again in a minute.")
+            return
+    events = timeline.run(pipeline)
+    if not events:
+        st.warning("No claims found for this selection.")
+    by_date: dict[str, list[dict]] = {}
+    for ev in events:
+        by_date.setdefault(ev["date"], []).append(ev)
+    for date, group in by_date.items():
+        with st.container(border=True):
+            estimate = "  ·  *no publication date found: fetch date shown*" if group[0]["date_is_estimate"] else ""
+            st.markdown(f"#### 📅 {date}{estimate}")
+            for ev in group:
+                a = ev["article"]
+                score = f" · match {ev['score']:.2f}" if "score" in ev else ""
+                st.markdown(f"{ev['text']}")
+                st.caption(f":{STATUS_BADGE[ev['status']]}-badge[{ev['status']}]{score} · [{a['title'] or a['source']}]({a['url']}) · {a['source']}")
+    with st.expander("Show the MongoDB pipeline behind this page"):
+        st.code(timeline.describe(pipeline), language="json")
+
+
+PAGES = {"🕵️ Investigate": page_investigate, "📜 History": page_history, "🧩 Claims": page_claims,
+         "⏳ Timeline": page_timeline, "🕸️ Graph": page_graph}
 # ?page=history (or investigate / claims / graph) opens a page directly, so pages can be linked
 _wanted = next((i for i, name in enumerate(PAGES) if st.query_params.get("page", "") in name.lower()), 0) if st.query_params.get("page") else 0
 choice = st.sidebar.radio("Navigate", list(PAGES), index=_wanted, label_visibility="collapsed")

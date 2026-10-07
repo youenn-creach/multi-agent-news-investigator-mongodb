@@ -11,8 +11,10 @@ Multi-agent news investigator (LangGraph + MongoDB Atlas + Voyage embeddings), a
 ## Architecture (see src/investigator/)
 `llm.py` Gemini -> Groq -> Ollama cascade with timeouts; `db.py` Atlas; `tools/` article fetch + Tavily search (cached, credit counter); `extraction.py` claims/entities; `embeddings.py` Voyage via https://ai.mongodb.com/v1/embeddings (voyage-4-lite, 1024 dims, rate-limited: retry built in); `memory.py` Atlas Vector Search on claims; `dedup.py` semantic claim dedup (cosine bands + strict LLM judge + numbers guard); `graph.py` LangGraph hunter -> analyst -> searcher -> broaden -> historian -> skeptic -> writer; `investigation.py` runs and persists; `cli.py`.
 
-## Status (2026-10-06)
-PRs #1 (pipeline), #2 (Streamlit UI), #3 (README) are merged. Semantic claim dedup (`dedup.py`) is on branch `feature/semantic-dedup`. Next ideas: Timeline page, demo mode for a public deployment, evaluation set, source-reliability scoring.
+## Status (2026-10-07)
+PRs #1 (pipeline), #2 (Streamlit UI), #3 (README) are merged. Semantic claim dedup (`dedup.py`) is committed on `feature/semantic-dedup` (not pushed). Timeline page (`timeline.py`, `page_timeline` in app.py) and README additions were written on top of it but are UNTESTED and uncommitted: next session, run `scratch/12_ui_smoke.py`, test both timeline modes, commit, then push. Also pending: GitHub About description and topics (`gh repo edit`). Further ideas: demo mode for a public deployment, evaluation set, source-reliability scoring.
+
+Project goal to keep in mind (subtly): the repo also showcases MongoDB Atlas, Vector Search and Voyage AI for agentic workloads.
 
 ## Quirks
 `gemini-3.7-flash` / `3.8-flash` often return 503; smart tier uses `gemini-3.5-flash`. Groq structured output needs `method="json_schema"`.

@@ -4,7 +4,7 @@
 
 Built with **LangGraph**, **MongoDB Atlas** (including **Vector Search**), **Voyage AI** embeddings and a **free-tier-only** mix of cloud and local LLMs.
 
-![A finished investigation report](docs/img/report.png)
+![Demo: pasting a URL and watching the agents work](docs/img/demo.gif)
 
 ## Why this isn't "just ChatGPT"
 
@@ -42,9 +42,11 @@ The agents share one state object. Each node reads it and returns only what it c
 
 ### In the app
 
-| Claims and their evidence trail | Knowledge graph |
+| Report | Claims and their evidence trail |
 |---|---|
-| ![Claims page](docs/img/claims.png) | ![Knowledge graph](docs/img/graph.png) |
+| ![Investigation report](docs/img/report.png) | ![Claims page](docs/img/claims.png) |
+| **Timeline** (one MongoDB aggregation pipeline) | **Knowledge graph** |
+| ![Timeline page](docs/img/timeline.png) | ![Knowledge graph](docs/img/graph.png) |
 
 Blue = entities, green = corroborated claims, grey = unverified claims, purple squares = articles.
 
@@ -58,6 +60,30 @@ Blue = entities, green = corroborated claims, grey = unverified claims, purple s
 | `searches` | cached search results (7 days) | protects the scarce search quota |
 | `usage` | monthly search-credit counter | the tool refuses to search past the budget |
 | `investigations` | one document per run: steps, report, sources, memory | steps are saved as they happen, so a crash leaves a partial record |
+
+### Why a document database suits this kind of agent workload
+
+Notes from building it, not a sales pitch:
+
+- **One store for state, memory and vectors.** A claim is one document holding its text, status, evidence trail *and* its embedding. There is no separate vector database to keep in sync, and `$vectorSearch` is just another stage in an ordinary aggregation pipeline.
+- **Semantic search and normal queries in the same query.** The Timeline page runs `$vectorSearch → $lookup → $sort` as a single pipeline: find claims by meaning, join them to the articles that made them, order them by date.
+- **A flexible schema matches evolving agent state.** An investigation document grows as each agent step streams in, and the claim schema gained fields (`variants`, evidence, memory) several times during development without a single migration.
+- **Upserts and unique indexes make agent work idempotent.** Retried steps and repeated URLs never create duplicates, which is what makes aggressive caching safe.
+- **Good embeddings matter, with caveats.** Voyage AI's `voyage-4-lite` (1024 dimensions) matched "Eurozone central bank hikes borrowing costs" to an ECB rate claim sharing no keywords. It is weak on exact figures, though, which is why claim deduplication adds a numbers check and an LLM judge.
+
+### Timelines are one aggregation pipeline
+
+The Timeline page shows the pipeline it ran ("Show the MongoDB pipeline behind this page"). The semantic version, simplified:
+
+```text
+$vectorSearch   claims closest in meaning to the topic you typed
+$match          keep strong matches
+$unwind         one event per (claim, article) pair
+$lookup         join each event to its article (title, source, publication date)
+$sort           chronological order
+```
+
+Code: [`timeline.py`](src/investigator/timeline.py).
 
 ### Semantic claim deduplication
 
@@ -126,13 +152,15 @@ uv run python -m investigator.cli "<article-url>"   # command line
 ## Project layout
 
 ```
-app.py                      Streamlit UI (investigate, history, claims, graph)
+app.py                      Streamlit UI (investigate, history, claims, timeline, graph)
 src/investigator/
-  llm.py                    tiered LLM routing with fallbacks
+  llm.py                    tiered LLM routing with fallbacks and hard deadlines
   graph.py                  the LangGraph pipeline (nodes, edges, state)
   investigation.py          runs the graph and persists progress
   extraction.py             claims and entities (Pydantic schemas, prompts)
   memory.py                 Atlas Vector Search over claims
+  dedup.py                  semantic claim deduplication
+  timeline.py               timelines as MongoDB aggregation pipelines
   embeddings.py             Voyage AI client with retry
   db.py                     MongoDB access
   tools/articles.py         fetch + cache an article
@@ -155,7 +183,6 @@ docs/PLAN.md                the original learning plan
 ## Roadmap
 
 - Source-reliability scoring learned from past evidence
-- Timeline view per entity
 - Scheduled re-checking of unverified claims
 - Evaluation set to measure extraction and verdict quality
 

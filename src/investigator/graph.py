@@ -6,6 +6,7 @@ Each node reads the shared state and returns only the keys it changes.
 A node that fails records the problem in `errors` and the graph carries on, degraded.
 """
 import operator
+import re
 from typing import Annotated, Literal, TypedDict
 from urllib.parse import urlparse
 
@@ -130,7 +131,7 @@ def historian(state: InvestigationState) -> dict:
         return {"memory": [], "errors": [f"historian: {type(e).__name__}: {str(e)[:120]}"]}
 
 
-SKEPTIC_PROMPT = """You are a skeptical fact-checker. For EACH numbered claim from the article, decide whether the independent sources below support it, contradict it, or do not address it. Judge only from the sources and the past investigations given; never from your own memory. If they do not clearly address the claim, answer "unclear".
+SKEPTIC_PROMPT = """You are a skeptical fact-checker. For EACH numbered claim from the article, decide whether the independent sources below support it, contradict it, or do not address it. Judge only from the sources and the past investigations given; never from your own memory. In each note, name sources by their website (e.g. "Euronews"), never by their [number]. If they do not clearly address the claim, answer "unclear".
 
 CLAIMS:
 {claims}
@@ -159,8 +160,20 @@ def skeptic(state: InvestigationState) -> dict:
         return {"verdicts": [], "errors": [f"skeptic: {type(e).__name__}: {str(e)[:120]}"]}
 
     verdicts = [v.model_dump() for v in result.verdicts if 0 <= v.claim_index < len(claims)]
+    for v in verdicts:
+        v["note"] = _name_sources(v["note"], sources)
     _update_claim_status(state, claims, sources, verdicts)
     return {"verdicts": verdicts}
+
+
+def _name_sources(note: str, sources: list[dict]) -> str:
+    """Models sometimes cite sources by list number ("[2]", "sources 1 and 3"): show site names instead."""
+    def names(nums: str, fallback: str) -> str:
+        found = [sources[int(n)]["source"] for n in re.findall(r"\d+", nums) if int(n) < len(sources)]
+        return ", ".join(found) if found else fallback
+
+    note = re.sub(r"\[(\d+)\]", lambda m: names(m.group(1), m.group(0)), note)
+    return re.sub(r"(?i)\bsources?\s+(\d+(?:\s*(?:,|and|&)\s*\d+)*)", lambda m: names(m.group(1), m.group(0)), note)
 
 
 def _update_claim_status(state, claims, sources, verdicts) -> None:
